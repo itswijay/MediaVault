@@ -1,0 +1,185 @@
+# Environment Variables
+.env
+.env.local
+.env.*.local
+.env_files.zip
+env_files.zip
+
+# Node modules
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build and distribution directories
+build/
+dist/
+.next/
+out/
+
+# Dependencies
+jspm_packages/
+
+# Log files
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory
+coverage/
+.nyc_output/
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# OS files
+Thumbs.db
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Cache directories
+.cache/
+.eslintcache
+
+# Parcel related
+.cache/
+dist/
+
+# Vite
+.vite/
+
+# PM2
+.pm2/
+
+# MongoDB
+.mongodb
+
+# Cloudinary uploads (temporary storage)
+uploads/
+public/uploads/
+backend/uploads/
+
+# IDE Vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.vscode-test
+.vscode-test.log
+
+# Misc
+*.bak
+*.swp
+.idea/
+*.iml
+out/
+
+# Testing
+.jest_cache/
+.nyc_output/
+
+# Project specific
+todos.md
+.env.example.backend
+.env.example.frontend
+
+# Mac
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Linux
+.directory
+
+# Compiled files
+*.o
+*.a
+*.so
+
+# Package manager files
+.pnpm-lock.yaml
+pnpm-lock.yaml
+
+# Yarn
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# Vim
+.swp
+.swo
+*~
+.vimrc
+
+# ctags
+tags
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Large files
+*.zip
+*.rar
+*.tar.gz
+
+# API keys and secrets (already covered by .env but being explicit)
+*secrets*
+*api*key*
+*token*
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Redux DevTools
+redux-devtools-extension
+
+# Session storage
+sessions/
+
+# Backups
+*.backup
+*.bkp
+
+# Documentation build
+docs/build/

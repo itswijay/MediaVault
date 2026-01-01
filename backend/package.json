@@ -1,0 +1,20 @@
+{
+  "name": "media-vault",
+  "version": "1.0.0",
+  "description": "Media Gallery Management System",
+  "license": "ISC",
+  "author": "Pubudu Wijesundara",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "mongoose": "^9.1.1",
+    "nodemon": "^3.1.11"
+  }
+}
