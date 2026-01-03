@@ -14,20 +14,10 @@ if (!fs.existsSync(uploadsDir)) {
 
 /**
  * Configure multer storage
- * Files will be stored in backend/uploads directory
+ * Using memory storage since files are uploaded directly to Cloudinary
+ * No need to save to disk first
  */
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadsDir)
-  },
-  filename: (req, file, cb) => {
-    // Generate unique filename with timestamp
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
-    const ext = path.extname(file.originalname)
-    const name = path.basename(file.originalname, ext)
-    cb(null, `${name}-${uniqueSuffix}${ext}`)
-  },
-})
+const storage = multer.memoryStorage()
 
 /**
  * File filter to validate file types

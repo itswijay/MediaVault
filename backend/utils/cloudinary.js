@@ -4,17 +4,21 @@ import fs from 'fs'
 const cloudinaryV2 = cloudinary.v2
 
 /**
- * Configure Cloudinary with API credentials from environment variables
+ * Initialize Cloudinary configuration with API credentials from environment variables
  * Required environment variables:
  * - CLOUDINARY_NAME
  * - CLOUDINARY_API_KEY
  * - CLOUDINARY_API_SECRET
  */
-cloudinaryV2.config({
-  cloud_name: process.env.CLOUDINARY_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-})
+const initializeCloudinary = () => {
+  if (!cloudinaryV2.config().cloud_name) {
+    cloudinaryV2.config({
+      cloud_name: process.env.CLOUDINARY_NAME,
+      api_key: process.env.CLOUDINARY_API_KEY,
+      api_secret: process.env.CLOUDINARY_API_SECRET,
+    })
+  }
+}
 
 /**
  * Upload a file to Cloudinary
@@ -24,6 +28,9 @@ cloudinaryV2.config({
  */
 const uploadToCloudinary = async (filePath, options = {}) => {
   try {
+    // Initialize Cloudinary configuration
+    initializeCloudinary()
+
     // Validate file exists
     if (!fs.existsSync(filePath)) {
       throw new Error(`File not found: ${filePath}`)
@@ -71,6 +78,9 @@ const uploadToCloudinary = async (filePath, options = {}) => {
  */
 const uploadBufferToCloudinary = async (fileBuffer, filename, options = {}) => {
   try {
+    // Initialize Cloudinary configuration
+    initializeCloudinary()
+
     if (!fileBuffer) {
       throw new Error('File buffer is empty')
     }
