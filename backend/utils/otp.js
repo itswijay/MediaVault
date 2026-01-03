@@ -4,14 +4,21 @@ import nodemailer from 'nodemailer'
 // In production, use Redis for better scalability
 const otpStore = {}
 
-// Configure nodemailer with Gmail
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASSWORD,
-  },
-})
+// Initialize transporter lazily
+let transporter = null
+
+const initializeTransporter = () => {
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASSWORD,
+      },
+    })
+  }
+  return transporter
+}
 
 /**
  * Generate a 6-digit OTP code
@@ -29,6 +36,16 @@ const generateOTP = () => {
  */
 const sendOTP = async (email, purpose = 'verification') => {
   try {
+    // Initialize transporter
+    const mailTransporter = initializeTransporter()
+
+    // Validate Gmail credentials
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_PASSWORD) {
+      throw new Error(
+        'Gmail credentials not configured in environment variables'
+      )
+    }
+
     // Generate OTP
     const otp = generateOTP()
 
@@ -75,7 +92,7 @@ const sendOTP = async (email, purpose = 'verification') => {
     }
 
     // Send email
-    await transporter.sendMail({
+    await mailTransporter.sendMail({
       from: process.env.GMAIL_USER,
       to: email,
       subject,
