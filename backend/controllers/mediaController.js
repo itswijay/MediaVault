@@ -351,11 +351,15 @@ const searchMedia = async (req, res) => {
 
     // Only show public media or user's own media
     if (!isPublicParam || isPublicParam === 'false') {
-      query.$or = [
-        { userId: req.user.id },
-        { sharedWith: req.user.id },
-        { isPublic: true },
-      ]
+      if (req.user) {
+        query.$or = [
+          { userId: req.user.id },
+          { sharedWith: req.user.id },
+          { isPublic: true },
+        ]
+      } else {
+        query.isPublic = true
+      }
     }
 
     // Get total count

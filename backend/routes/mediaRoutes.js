@@ -29,7 +29,7 @@ router.get('/public', getPublicMedia)
  * GET /api/media/search
  * Search media by title and tags
  */
-router.get('/search', searchMedia)
+router.get('/search', optionalAuth, searchMedia)
 
 /**
  * Protected Routes (Authentication required)
