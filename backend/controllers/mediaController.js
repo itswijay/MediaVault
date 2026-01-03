@@ -238,7 +238,7 @@ const updateMedia = async (req, res) => {
     }
 
     // Check ownership
-    if (media.userId.toString() !== req.user.id) {
+    if (media.userId._id.toString() !== req.user.id) {
       return res.status(403).json({
         success: false,
         message: 'You can only update your own media.',
@@ -288,7 +288,7 @@ const deleteMedia = async (req, res) => {
     }
 
     // Check ownership
-    if (media.userId.toString() !== req.user.id) {
+    if (media.userId._id.toString() !== req.user.id) {
       return res.status(403).json({
         success: false,
         message: 'You can only delete your own media.',
@@ -415,7 +415,7 @@ const shareMedia = async (req, res) => {
     }
 
     // Check ownership
-    if (media.userId.toString() !== req.user.id) {
+    if (media.userId._id.toString() !== req.user.id) {
       return res.status(403).json({
         success: false,
         message: 'You can only share your own media.',
