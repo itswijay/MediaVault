@@ -192,10 +192,10 @@ const getMediaById = async (req, res) => {
     }
 
     // Check access: owner, admin, or in sharedWith
-    const isOwner = media.userId._id.toString() === req.user.id
-    const isShared = media.sharedWith.some(
-      (userId) => userId._id.toString() === req.user.id
-    )
+    const isOwner = req.user && media.userId._id.toString() === req.user.id
+    const isShared =
+      req.user &&
+      media.sharedWith.some((userId) => userId._id.toString() === req.user.id)
     const isPublic = media.isPublic
 
     if (!isOwner && !isShared && !isPublic) {

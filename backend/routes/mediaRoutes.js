@@ -10,7 +10,7 @@ import {
   shareMedia,
   downloadMediaZip,
 } from '../controllers/mediaController.js'
-import { authMiddleware } from '../middlewares/auth.js'
+import { authMiddleware, optionalAuth } from '../middlewares/auth.js'
 import { uploadSingle, handleUploadErrors } from '../utils/upload.js'
 
 const router = express.Router()
@@ -58,7 +58,7 @@ router.get('/my-media', authMiddleware, getUserMedia)
  * GET /api/media/:id
  * Get media by ID with access verification
  */
-router.get('/:id', getMediaById)
+router.get('/:id', optionalAuth, getMediaById)
 
 /**
  * PUT /api/media/:id
