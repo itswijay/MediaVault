@@ -8,7 +8,8 @@ import Contact from '../models/Contact.js'
  */
 const getUserProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id)
+    const userId = req.user.userId || req.user.id
+    const user = await User.findById(userId)
 
     if (!user) {
       return res.status(404).json({
@@ -38,8 +39,9 @@ const getUserProfile = async (req, res) => {
 const updateUserProfile = async (req, res) => {
   try {
     const { name, email, profileImage } = req.body
+    const userId = req.user.userId || req.user.id
 
-    const user = await User.findById(req.user.id)
+    const user = await User.findById(userId)
 
     if (!user) {
       return res.status(404).json({
