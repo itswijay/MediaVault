@@ -1,14 +1,19 @@
-const express = require('express')
-const cors = require('cors')
-const dotenv = require('dotenv')
-const path = require('path')
-const connectDB = require('./config/database')
+import express from 'express'
+import cors from 'cors'
+import dotenv from 'dotenv'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import connectDB from './config/database.js'
 
 // Import routes
-const authRoutes = require('./routes/authRoutes')
-const mediaRoutes = require('./routes/mediaRoutes')
-const contactRoutes = require('./routes/contactRoutes')
-const userRoutes = require('./routes/userRoutes')
+import authRoutes from './routes/authRoutes.js'
+import mediaRoutes from './routes/mediaRoutes.js'
+import contactRoutes from './routes/contactRoutes.js'
+import userRoutes from './routes/userRoutes.js'
+
+// Handle __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 // Load environment variables
 dotenv.config()
@@ -111,25 +116,12 @@ const NODE_ENV = process.env.NODE_ENV || 'development'
 
 const server = app.listen(PORT, () => {
   console.log('\n========== SERVER STARTED ==========')
-  console.log(`⚡ Port: ${PORT}`)
-  console.log(`🔧 Environment: ${NODE_ENV}`)
-  console.log(`📦 MongoDB: Connected`)
+  console.log(`Port: ${PORT}`)
+  console.log(`Environment: ${NODE_ENV}`)
   console.log(
-    `🌐 CORS Origin: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`
+    `CORS Origin: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`
   )
   console.log('====================================\n')
-
-  // Display API routes
-  console.log('📍 Available API Routes:')
-  console.log('  • GET  /api/health')
-  console.log('  • POST /api/auth/register')
-  console.log('  • POST /api/auth/login')
-  console.log('  • POST /api/auth/google-login')
-  console.log('  • POST /api/media/upload')
-  console.log('  • GET  /api/media/public')
-  console.log('  • POST /api/contact')
-  console.log('  • GET  /api/users/profile')
-  console.log('  • And more...\n')
 })
 
 // Handle server errors
@@ -155,4 +147,4 @@ process.on('SIGINT', () => {
   })
 })
 
-module.exports = app
+export default app

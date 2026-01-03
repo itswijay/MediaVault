@@ -1,5 +1,7 @@
-const cloudinary = require('cloudinary').v2;
-const fs = require('fs');
+import cloudinary from 'cloudinary'
+import fs from 'fs'
+
+const cloudinaryV2 = cloudinary.v2
 
 /**
  * Configure Cloudinary with API credentials from environment variables
@@ -8,11 +10,11 @@ const fs = require('fs');
  * - CLOUDINARY_API_KEY
  * - CLOUDINARY_API_SECRET
  */
-cloudinary.config({
+cloudinaryV2.config({
   cloud_name: process.env.CLOUDINARY_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+})
 
 /**
  * Upload a file to Cloudinary
@@ -24,7 +26,7 @@ const uploadToCloudinary = async (filePath, options = {}) => {
   try {
     // Validate file exists
     if (!fs.existsSync(filePath)) {
-      throw new Error(`File not found: ${filePath}`);
+      throw new Error(`File not found: ${filePath}`)
     }
 
     // Default options
@@ -33,10 +35,10 @@ const uploadToCloudinary = async (filePath, options = {}) => {
       folder: 'mediavault', // Store files in mediavault folder
       quality: 'auto', // Auto-optimize quality
       ...options,
-    };
+    }
 
     // Upload file to Cloudinary
-    const result = await cloudinary.uploader.upload(filePath, uploadOptions);
+    const result = await cloudinaryV2.uploader.upload(filePath, uploadOptions)
 
     return {
       success: true,
@@ -49,16 +51,16 @@ const uploadToCloudinary = async (filePath, options = {}) => {
         height: result.height,
         uploadedAt: new Date(),
       },
-    };
+    }
   } catch (error) {
-    console.error('Cloudinary upload error:', error);
+    console.error('Cloudinary upload error:', error)
     return {
       success: false,
       message: 'Failed to upload file to Cloudinary.',
       error: error.message,
-    };
+    }
   }
-};
+}
 
 /**
  * Upload a file buffer to Cloudinary (without saving to disk first)
@@ -70,7 +72,7 @@ const uploadToCloudinary = async (filePath, options = {}) => {
 const uploadBufferToCloudinary = async (fileBuffer, filename, options = {}) => {
   try {
     if (!fileBuffer) {
-      throw new Error('File buffer is empty');
+      throw new Error('File buffer is empty')
     }
 
     const uploadOptions = {
@@ -79,16 +81,16 @@ const uploadBufferToCloudinary = async (fileBuffer, filename, options = {}) => {
       quality: 'auto',
       public_id: filename.split('.')[0], // Use filename without extension as public_id
       ...options,
-    };
+    }
 
     // Upload buffer to Cloudinary using a stream
     return new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
+      const uploadStream = cloudinaryV2.uploader.upload_stream(
         uploadOptions,
         (error, result) => {
           if (error) {
-            console.error('Cloudinary buffer upload error:', error);
-            reject(error);
+            console.error('Cloudinary buffer upload error:', error)
+            reject(error)
           } else {
             resolve({
               success: true,
@@ -101,23 +103,23 @@ const uploadBufferToCloudinary = async (fileBuffer, filename, options = {}) => {
                 height: result.height,
                 uploadedAt: new Date(),
               },
-            });
+            })
           }
         }
-      );
+      )
 
       // Write buffer to stream
-      uploadStream.end(fileBuffer);
-    });
+      uploadStream.end(fileBuffer)
+    })
   } catch (error) {
-    console.error('Cloudinary buffer upload error:', error);
+    console.error('Cloudinary buffer upload error:', error)
     return {
       success: false,
       message: 'Failed to upload buffer to Cloudinary.',
       error: error.message,
-    };
+    }
   }
-};
+}
 
 /**
  * Delete a file from Cloudinary
@@ -127,33 +129,33 @@ const uploadBufferToCloudinary = async (fileBuffer, filename, options = {}) => {
 const deleteFromCloudinary = async (publicId) => {
   try {
     if (!publicId) {
-      throw new Error('Public ID is required');
+      throw new Error('Public ID is required')
     }
 
-    const result = await cloudinary.uploader.destroy(publicId);
+    const result = await cloudinaryV2.uploader.destroy(publicId)
 
     if (result.result === 'ok') {
       return {
         success: true,
         message: 'File deleted successfully from Cloudinary.',
         publicId,
-      };
+      }
     } else {
       return {
         success: false,
         message: 'Failed to delete file from Cloudinary.',
         result: result.result,
-      };
+      }
     }
   } catch (error) {
-    console.error('Cloudinary delete error:', error);
+    console.error('Cloudinary delete error:', error)
     return {
       success: false,
       message: 'Error deleting file from Cloudinary.',
       error: error.message,
-    };
+    }
   }
-};
+}
 
 /**
  * Get information about a file in Cloudinary
@@ -163,10 +165,10 @@ const deleteFromCloudinary = async (publicId) => {
 const getFileInfo = async (publicId) => {
   try {
     if (!publicId) {
-      throw new Error('Public ID is required');
+      throw new Error('Public ID is required')
     }
 
-    const result = await cloudinary.api.resource(publicId);
+    const result = await cloudinaryV2.api.resource(publicId)
 
     return {
       success: true,
@@ -179,16 +181,16 @@ const getFileInfo = async (publicId) => {
         height: result.height,
         uploadedAt: result.created_at,
       },
-    };
+    }
   } catch (error) {
-    console.error('Cloudinary get file info error:', error);
+    console.error('Cloudinary get file info error:', error)
     return {
       success: false,
       message: 'Failed to get file information.',
       error: error.message,
-    };
+    }
   }
-};
+}
 
 /**
  * Transform image URL with Cloudinary transformation options
@@ -198,17 +200,17 @@ const getFileInfo = async (publicId) => {
  */
 const getTransformedUrl = (publicId, transformations = {}) => {
   try {
-    const url = cloudinary.url(publicId, {
+    const url = cloudinaryV2.url(publicId, {
       secure: true,
       ...transformations,
-    });
+    })
 
-    return url;
+    return url
   } catch (error) {
-    console.error('Cloudinary transformation error:', error);
-    return null;
+    console.error('Cloudinary transformation error:', error)
+    return null
   }
-};
+}
 
 /**
  * Generate a thumbnail URL for an image
@@ -224,8 +226,8 @@ const getThumbnailUrl = (publicId, width = 200, height = 200) => {
     crop: 'fill',
     gravity: 'auto',
     quality: 'auto',
-  });
-};
+  })
+}
 
 /**
  * Batch delete multiple files from Cloudinary
@@ -235,31 +237,31 @@ const getThumbnailUrl = (publicId, width = 200, height = 200) => {
 const batchDelete = async (publicIds) => {
   try {
     if (!Array.isArray(publicIds) || publicIds.length === 0) {
-      throw new Error('publicIds must be a non-empty array');
+      throw new Error('publicIds must be a non-empty array')
     }
 
-    const results = await cloudinary.api.delete_resources(publicIds);
+    const results = await cloudinaryV2.api.delete_resources(publicIds)
 
     const successCount = Object.values(results.deleted).filter(
       (v) => v === 'ok'
-    ).length;
+    ).length
 
     return {
       success: true,
       message: `Deleted ${successCount} out of ${publicIds.length} files.`,
       details: results,
-    };
+    }
   } catch (error) {
-    console.error('Cloudinary batch delete error:', error);
+    console.error('Cloudinary batch delete error:', error)
     return {
       success: false,
       message: 'Error performing batch deletion.',
       error: error.message,
-    };
+    }
   }
-};
+}
 
-module.exports = {
+export {
   uploadToCloudinary,
   uploadBufferToCloudinary,
   deleteFromCloudinary,
@@ -267,4 +269,4 @@ module.exports = {
   getTransformedUrl,
   getThumbnailUrl,
   batchDelete,
-};
+}

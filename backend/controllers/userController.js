@@ -1,6 +1,6 @@
-const User = require('../models/User')
-const Media = require('../models/Media')
-const Contact = require('../models/Contact')
+import User from '../models/User.js'
+import Media from '../models/Media.js'
+import Contact from '../models/Contact.js'
 
 /**
  * Get user profile
@@ -341,7 +341,7 @@ const hardDeleteUser = async (req, res) => {
   }
 }
 
-module.exports = {
+export {
   getUserProfile,
   updateUserProfile,
   getUserById,

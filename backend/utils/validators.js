@@ -1,4 +1,4 @@
-const { body, param, query, validationResult } = require('express-validator')
+import { body, param, query, validationResult } from 'express-validator'
 
 /**
  * Validation error handler middleware
@@ -342,7 +342,7 @@ const validateHardDelete = [
     .withMessage('Please provide correct confirmation (DELETE)'),
 ]
 
-module.exports = {
+export {
   handleValidationErrors,
   // Auth
   validateRegister,

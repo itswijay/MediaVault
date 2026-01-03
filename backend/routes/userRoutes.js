@@ -1,5 +1,5 @@
-const express = require('express')
-const {
+import express from 'express'
+import {
   getUserProfile,
   updateUserProfile,
   getUserById,
@@ -7,8 +7,8 @@ const {
   updateUser,
   softDeleteUser,
   hardDeleteUser,
-} = require('../controllers/userController')
-const { authMiddleware, roleMiddleware } = require('../middlewares/auth')
+} from '../controllers/userController.js'
+import { authMiddleware, roleMiddleware } from '../middlewares/auth.js'
 
 const router = express.Router()
 
@@ -75,4 +75,4 @@ router.delete(
   hardDeleteUser
 )
 
-module.exports = router
+export default router

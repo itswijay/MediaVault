@@ -1,14 +1,14 @@
-const Media = require('../models/Media')
-const User = require('../models/User')
-const { deleteUploadedFile, getFileStats } = require('../utils/upload')
-const {
+import Media from '../models/Media.js'
+import User from '../models/User.js'
+import { deleteUploadedFile, getFileStats } from '../utils/upload.js'
+import {
   uploadBufferToCloudinary,
   deleteFromCloudinary,
   getThumbnailUrl,
-} = require('../utils/cloudinary')
-const fs = require('fs')
-const path = require('path')
-const archiver = require('archiver')
+} from '../utils/cloudinary.js'
+import fs from 'fs'
+import path from 'path'
+import archiver from 'archiver'
 
 /**
  * Upload media endpoint
@@ -531,7 +531,7 @@ const downloadMediaZip = async (req, res) => {
   }
 }
 
-module.exports = {
+export {
   uploadMedia,
   getUserMedia,
   getPublicMedia,

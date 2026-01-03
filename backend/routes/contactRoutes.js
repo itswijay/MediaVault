@@ -1,5 +1,5 @@
-const express = require('express')
-const {
+import express from 'express'
+import {
   submitMessage,
   getUserMessages,
   updateMessage,
@@ -7,12 +7,12 @@ const {
   getAllMessages,
   adminDeleteMessage,
   markAsRead,
-} = require('../controllers/contactController')
-const {
+} from '../controllers/contactController.js'
+import {
   authMiddleware,
   optionalAuth,
   roleMiddleware,
-} = require('../middlewares/auth')
+} from '../middlewares/auth.js'
 
 const router = express.Router()
 
@@ -81,4 +81,4 @@ router.delete(
  */
 router.put('/:id/read', authMiddleware, roleMiddleware('admin'), markAsRead)
 
-module.exports = router
+export default router

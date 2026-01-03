@@ -202,7 +202,7 @@ const asyncHandler = (fn) => {
   }
 }
 
-module.exports = {
+export {
   AppError,
   BadRequestError,
   UnauthorizedError,

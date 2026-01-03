@@ -1,5 +1,5 @@
-const express = require('express')
-const {
+import express from 'express'
+import {
   register,
   sendOTPHandler,
   verifyOTPHandler,
@@ -9,8 +9,8 @@ const {
   resetPassword,
   refreshToken,
   logout,
-} = require('../controllers/authController')
-const { authMiddleware } = require('../middlewares/auth')
+} from '../controllers/authController.js'
+import { authMiddleware } from '../middlewares/auth.js'
 
 const router = express.Router()
 
@@ -76,4 +76,4 @@ router.post('/refresh-token', refreshToken)
  */
 router.post('/logout', authMiddleware, logout)
 
-module.exports = router
+export default router

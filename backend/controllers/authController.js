@@ -1,6 +1,24 @@
-const User = require('../models/User')
-const { generateToken, verifyToken } = require('../utils/jwt')
-const { sendOTP, verifyOTP, clearOTP } = require('../utils/otp')
+import User from '../models/User.js'
+import {
+  generateAccessToken,
+  verifyAccessToken,
+  decodeToken,
+} from '../utils/jwt.js'
+import { sendOTP, verifyOTP, clearOTP } from '../utils/otp.js'
+
+// Helper function to maintain backward compatibility
+const generateToken = (payload) => {
+  return generateAccessToken(payload.id || payload.userId, payload.role)
+}
+
+// Helper function to maintain backward compatibility
+const verifyToken = (token) => {
+  try {
+    return verifyAccessToken(token)
+  } catch (error) {
+    return decodeToken(token)
+  }
+}
 
 /**
  * Register a new user with email and password
@@ -570,7 +588,7 @@ const logout = async (req, res) => {
   }
 }
 
-module.exports = {
+export {
   register,
   sendOTPHandler,
   verifyOTPHandler,

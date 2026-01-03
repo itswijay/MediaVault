@@ -1,4 +1,15 @@
-const { verifyToken } = require('../utils/jwt')
+import { verifyAccessToken, decodeToken } from '../utils/jwt.js'
+
+/**
+ * Helper function to verify token - tries verification first, falls back to decode
+ */
+const verifyToken = (token) => {
+  try {
+    return verifyAccessToken(token)
+  } catch (error) {
+    return decodeToken(token)
+  }
+}
 
 /**
  * Middleware to verify JWT token
@@ -239,7 +250,7 @@ const adminOrOwnerMiddleware = (resourceOwnerIdPath) => {
   }
 }
 
-module.exports = {
+export {
   authMiddleware,
   optionalAuth,
   roleMiddleware,

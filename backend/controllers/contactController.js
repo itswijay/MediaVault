@@ -1,4 +1,4 @@
-const Contact = require('../models/Contact')
+import Contact from '../models/Contact.js'
 
 /**
  * Submit contact message
@@ -347,7 +347,7 @@ const markAsRead = async (req, res) => {
   }
 }
 
-module.exports = {
+export {
   submitMessage,
   getUserMessages,
   updateMessage,

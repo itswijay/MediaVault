@@ -1,5 +1,5 @@
-const express = require('express')
-const {
+import express from 'express'
+import {
   uploadMedia,
   getUserMedia,
   getPublicMedia,
@@ -9,9 +9,9 @@ const {
   searchMedia,
   shareMedia,
   downloadMediaZip,
-} = require('../controllers/mediaController')
-const { authMiddleware } = require('../middlewares/auth')
-const { uploadSingle, handleUploadErrors } = require('../utils/upload')
+} from '../controllers/mediaController.js'
+import { authMiddleware } from '../middlewares/auth.js'
+import { uploadSingle, handleUploadErrors } from '../utils/upload.js'
 
 const router = express.Router()
 
@@ -88,4 +88,4 @@ router.put('/:id/share', authMiddleware, shareMedia)
  */
 router.post('/download-zip', authMiddleware, downloadMediaZip)
 
-module.exports = router
+export default router
