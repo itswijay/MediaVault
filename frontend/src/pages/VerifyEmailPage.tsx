@@ -92,8 +92,8 @@ export const VerifyEmailPage = () => {
       })
 
       if (response.data.success) {
-        // Update user in context to mark email as verified
-        const updatedUser = {
+        // Update user in context to mark email as verified using backend response
+        const updatedUser = response.data.data || {
           ...user,
           isEmailVerified: true,
         }

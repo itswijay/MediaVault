@@ -190,19 +190,30 @@ const verifyOTPHandler = async (req, res) => {
       })
     }
 
-    // If verification is for registration, mark email as verified
-    if (result.purpose === 'registration') {
-      const user = await User.findOne({ email })
-      if (user) {
-        user.isEmailVerified = true
-        await user.save()
-      }
+    // Mark email as verified for both registration and email verification
+    const user = await User.findOne({ email })
+    if (user) {
+      user.isEmailVerified = true
+      await user.save()
     }
 
     return res.status(200).json({
       success: true,
       message: 'OTP verified successfully.',
       purpose: result.purpose,
+      data: user
+        ? {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            profileImage: user.profileImage,
+            isEmailVerified: user.isEmailVerified,
+            isActive: user.isActive,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+          }
+        : null,
     })
   } catch (error) {
     console.error('Verify OTP error:', error)
