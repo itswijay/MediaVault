@@ -458,10 +458,16 @@ export const DashboardPage = () => {
                   <h3 className="font-semibold text-yellow-300 mb-1">
                     Email Not Verified
                   </h3>
-                  <p className="text-yellow-200/80 text-sm">
+                  <p className="text-yellow-200/80 text-sm mb-4">
                     Please verify your email address to unlock all features.
                     Check your inbox for the verification link.
                   </p>
+                  <Button
+                    onClick={() => navigate('/verify-email')}
+                    className="bg-linear-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-semibold"
+                  >
+                    Verify Now
+                  </Button>
                 </div>
               </div>
             </CardContent>

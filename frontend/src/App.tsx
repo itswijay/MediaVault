@@ -15,6 +15,7 @@ import { MediaGalleryPage } from './pages/MediaGalleryPage'
 import { ImageUploadPage } from './pages/ImageUploadPage'
 import { ImageDetailPage } from './pages/ImageDetailPage'
 import { UserProfilePage } from './pages/UserProfilePage'
+import { VerifyEmailPage } from './pages/VerifyEmailPage'
 
 function App() {
   return (
@@ -26,6 +27,14 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route
+            path="/verify-email"
+            element={
+              <ProtectedRoute>
+                <VerifyEmailPage />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Protected Routes */}
           <Route
