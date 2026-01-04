@@ -25,6 +25,7 @@ import {
   Upload,
   Loader2,
   ChevronRight,
+  Camera,
 } from 'lucide-react'
 import logoImg from '../assets/mediavault.png'
 
@@ -60,14 +61,25 @@ export const DashboardPage = () => {
   }
 
   // Calculate statistics
+  const calculateStorageUsed = () => {
+    const totalBytes = mediaList.reduce((sum, m) => sum + (m.fileSize || 0), 0)
+    const mb = totalBytes / (1024 * 1024)
+    const gb = mb / 1024
+
+    if (gb >= 1) {
+      return `${gb.toFixed(2)} GB`
+    } else if (mb >= 1) {
+      return `${mb.toFixed(2)} MB`
+    } else {
+      return `${(totalBytes / 1024).toFixed(2)} KB`
+    }
+  }
+
   const stats = {
     totalUploads: mediaList.length,
     publicCount: mediaList.filter((m) => m.isPublic).length,
     privateCount: mediaList.filter((m) => !m.isPublic).length,
-    storageUsed: (
-      mediaList.reduce((sum, m) => sum + m.fileSize, 0) /
-      (1024 * 1024)
-    ).toFixed(2),
+    storageUsed: calculateStorageUsed(),
   }
 
   // Get recent uploads (last 5, sorted by date)
@@ -91,7 +103,7 @@ export const DashboardPage = () => {
   const handleDeleteMedia = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this media?')) {
       try {
-        setMediaList((prev) => prev.filter((m) => m.id !== id))
+        setMediaList((prev) => prev.filter((m) => (m._id || m.id) !== id))
         // Call delete API here if needed
       } catch (err) {
         console.error('Error deleting media:', err)
@@ -163,7 +175,7 @@ export const DashboardPage = () => {
         {/* Welcome Section */}
         <div>
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-2">
-            Welcome, {user.name}! 👋
+            Welcome, {user.name}!
           </h2>
           <p className="text-slate-400">
             Manage your media files and account on MediaVault
@@ -212,8 +224,8 @@ export const DashboardPage = () => {
           <StatCard
             icon={<HardDrive />}
             title="Storage Used"
-            value={`${stats.storageUsed} MB`}
-            subtitle="of 5000 MB"
+            value={stats.storageUsed}
+            subtitle="Total media storage"
             colorClass="amber"
           />
         </div>
@@ -313,7 +325,8 @@ export const DashboardPage = () => {
                   onClick={() => navigate('/gallery')}
                   className="h-11 bg-linear-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-lg flex items-center justify-center gap-2"
                 >
-                  📸 View Gallery
+                  <Camera className="w-4 h-4" />
+                  View Gallery
                 </Button>
                 <Button
                   onClick={() => navigate('/profile')}
@@ -347,7 +360,7 @@ export const DashboardPage = () => {
               <Button
                 onClick={() => navigate('/gallery')}
                 variant="ghost"
-                className="text-cyan-400 hover:text-cyan-300"
+                className="text-cyan-100 hover:text-cyan-200"
               >
                 View All <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
@@ -362,10 +375,10 @@ export const DashboardPage = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                 {recentUploads.map((media) => (
                   <MediaCard
-                    key={media.id}
+                    key={media._id || media.id}
                     media={media}
                     onDelete={handleDeleteMedia}
-                    onView={() => navigate(`/media/${media.id}`)}
+                    onView={() => navigate('/gallery')}
                     isLoading={isLoadingMedia}
                   />
                 ))}
@@ -414,7 +427,7 @@ export const DashboardPage = () => {
               <Button
                 onClick={() => navigate('/gallery')}
                 variant="ghost"
-                className="text-cyan-400 hover:text-cyan-300"
+                className="text-cyan-100 hover:text-cyan-200"
               >
                 View All <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
@@ -423,9 +436,9 @@ export const DashboardPage = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {sharedMedia.map((media) => (
                   <MediaCard
-                    key={media.id}
+                    key={media._id || media.id}
                     media={media}
-                    onView={() => navigate(`/media/${media.id}`)}
+                    onView={() => navigate('/gallery')}
                     isLoading={isLoadingMedia}
                   />
                 ))}

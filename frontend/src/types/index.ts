@@ -52,12 +52,14 @@ export interface ResetPasswordPayload {
 
 // Media Types
 export interface Media {
-  id: string
+  _id?: string
+  id?: string
   userId: string
   title: string
   description?: string
   tags: string[]
   imageUrl: string
+  thumbnailUrl?: string
   fileSize: number
   isPublic: boolean
   sharedWith: string[]

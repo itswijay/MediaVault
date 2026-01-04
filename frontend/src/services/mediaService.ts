@@ -1,18 +1,31 @@
 import api from './api'
 import type { Media, MediaResponse } from '../types'
 
+// Response type for paginated media
+interface PaginatedMediaResponse {
+  success: boolean
+  data: {
+    media: Media[]
+    pagination: {
+      currentPage: number
+      totalPages: number
+      totalItems: number
+      itemsPerPage: number
+    }
+  }
+}
+
 // Get user's media with pagination
 export const getUserMedia = async (
   page: number = 1,
   limit: number = 10
 ): Promise<Media[]> => {
   try {
-    const response = await api.get<MediaResponse>(
+    const response = await api.get<PaginatedMediaResponse>(
       `/media/my-media?page=${page}&limit=${limit}`
     )
-    if (response.data.success) {
-      const data = response.data.data
-      return Array.isArray(data) ? data : [data]
+    if (response.data.success && response.data.data?.media) {
+      return response.data.data.media
     }
     return []
   } catch (error) {
@@ -24,12 +37,11 @@ export const getUserMedia = async (
 // Get media with limit (for recent uploads)
 export const getRecentMedia = async (limit: number = 5): Promise<Media[]> => {
   try {
-    const response = await api.get<MediaResponse>(
+    const response = await api.get<PaginatedMediaResponse>(
       `/media/my-media?limit=${limit}&sort=-createdAt`
     )
-    if (response.data.success) {
-      const data = response.data.data
-      return Array.isArray(data) ? data : [data]
+    if (response.data.success && response.data.data?.media) {
+      return response.data.data.media
     }
     return []
   } catch (error) {
@@ -41,12 +53,11 @@ export const getRecentMedia = async (limit: number = 5): Promise<Media[]> => {
 // Get shared media
 export const getSharedMedia = async (limit: number = 5): Promise<Media[]> => {
   try {
-    const response = await api.get<MediaResponse>(
+    const response = await api.get<PaginatedMediaResponse>(
       `/media/shared?limit=${limit}&sort=-createdAt`
     )
-    if (response.data.success) {
-      const data = response.data.data
-      return Array.isArray(data) ? data : [data]
+    if (response.data.success && response.data.data?.media) {
+      return response.data.data.media
     }
     return []
   } catch (error) {
