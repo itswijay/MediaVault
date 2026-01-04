@@ -116,7 +116,7 @@ export const ImageUploadPage = () => {
         .map((tag) => tag.trim())
         .filter((tag) => tag.length > 0)
       if (tagList.length > 0) {
-        formData.append('tags', JSON.stringify(tagList))
+        formData.append('tags', tagList.join(','))
       }
 
       formData.append('isPublic', String(isPublic))

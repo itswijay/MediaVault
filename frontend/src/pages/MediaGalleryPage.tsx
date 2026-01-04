@@ -55,10 +55,10 @@ export const MediaGalleryPage = () => {
               </Button>
 
               <Button
-                variant="ghost"
+                variant="outline"
                 size="sm"
                 onClick={handleLogout}
-                className="text-red-400 hover:text-red-300 gap-2"
+                className="font-bold hover:text-red-300 gap-2"
               >
                 <LogOut className="w-4 h-4" />
                 <span className="hidden sm:inline">Logout</span>
