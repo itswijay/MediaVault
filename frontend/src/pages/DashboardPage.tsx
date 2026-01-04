@@ -60,8 +60,21 @@ export const DashboardPage = () => {
   }
 
   // Calculate statistics
+  const getIsOwnMedia = (media: Media): boolean => {
+    const mediaUserId =
+      typeof media.userId === 'object'
+        ? (media.userId as Record<string, any>)._id
+        : media.userId
+    return mediaUserId === user?.id
+  }
+
   const calculateStorageUsed = () => {
-    const totalBytes = mediaList.reduce((sum, m) => sum + (m.fileSize || 0), 0)
+    // Only count storage for media uploaded by this user
+    const uploadedMedia = mediaList.filter(getIsOwnMedia)
+    const totalBytes = uploadedMedia.reduce(
+      (sum, m) => sum + (m.fileSize || 0),
+      0
+    )
     const mb = totalBytes / (1024 * 1024)
     const gb = mb / 1024
 
@@ -75,9 +88,10 @@ export const DashboardPage = () => {
   }
 
   const stats = {
-    totalUploads: mediaList.length,
-    publicCount: mediaList.filter((m) => m.isPublic).length,
-    privateCount: mediaList.filter((m) => !m.isPublic).length,
+    totalUploads: mediaList.filter(getIsOwnMedia).length,
+    publicCount: mediaList.filter((m) => m.isPublic && getIsOwnMedia(m)).length,
+    privateCount: mediaList.filter((m) => !m.isPublic && getIsOwnMedia(m))
+      .length,
     storageUsed: calculateStorageUsed(),
   }
 
@@ -300,15 +314,23 @@ export const DashboardPage = () => {
               </div>
             ) : recentUploads.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                {recentUploads.map((media) => (
-                  <MediaCard
-                    key={media._id || media.id}
-                    media={media}
-                    onDelete={handleDeleteMedia}
-                    onView={() => navigate('/gallery')}
-                    isLoading={isLoadingMedia}
-                  />
-                ))}
+                {recentUploads.map((media) => {
+                  const mediaUserId =
+                    typeof media.userId === 'object'
+                      ? (media.userId as Record<string, any>)._id
+                      : media.userId
+                  const isOwnMedia = mediaUserId === user?.id
+
+                  return (
+                    <MediaCard
+                      key={media._id || media.id}
+                      media={media}
+                      onDelete={isOwnMedia ? handleDeleteMedia : undefined}
+                      onView={() => navigate('/gallery')}
+                      isLoading={isLoadingMedia}
+                    />
+                  )
+                })}
               </div>
             ) : (
               <div className="text-center py-12">

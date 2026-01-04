@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
@@ -29,6 +30,7 @@ export const MediaGallery: React.FC<MediaGalleryProps> = ({
   refreshTrigger,
 }) => {
   const navigate = useNavigate()
+  const { user } = useAuth()
   // State
   const [allMedia, setAllMedia] = useState<Media[]>([])
   const [filteredMedia, setFilteredMedia] = useState<Media[]>([])
@@ -397,15 +399,23 @@ export const MediaGallery: React.FC<MediaGalleryProps> = ({
                 : 'space-y-3'
             }
           >
-            {paginatedMedia.map((media) => (
-              <MediaCard
-                key={media._id || media.id}
-                media={media}
-                onView={handleViewMedia}
-                onDelete={handleDeleteMedia}
-                isLoading={isDeleting === (media._id || media.id)}
-              />
-            ))}
+            {paginatedMedia.map((media) => {
+              const mediaUserId =
+                typeof media.userId === 'object'
+                  ? (media.userId as Record<string, any>)._id
+                  : media.userId
+              const isOwnMedia = mediaUserId === user?.id
+
+              return (
+                <MediaCard
+                  key={media._id || media.id}
+                  media={media}
+                  onView={handleViewMedia}
+                  onDelete={isOwnMedia ? handleDeleteMedia : undefined}
+                  isLoading={isDeleting === (media._id || media.id)}
+                />
+              )
+            })}
           </div>
 
           {/* Pagination Controls */}

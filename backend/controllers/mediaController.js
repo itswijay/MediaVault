@@ -95,11 +95,20 @@ const getUserMedia = async (req, res) => {
     const skip = (page - 1) * limit
     const userId = req.user.userId || req.user.id
 
+    // Get media owned by user OR shared with user OR public from other users
+    const query = {
+      $or: [
+        { userId }, // Media owned by user
+        { sharedWith: userId }, // Media shared with user
+        { isPublic: true, userId: { $ne: userId } }, // Public media from other users
+      ],
+    }
+
     // Get total count
-    const total = await Media.countDocuments({ userId })
+    const total = await Media.countDocuments(query)
 
     // Get paginated media
-    const media = await Media.find({ userId })
+    const media = await Media.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)

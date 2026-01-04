@@ -107,16 +107,36 @@ export const UserProfilePage = () => {
 
   // Calculate statistics
   const calculateStorageUsed = () => {
-    const totalBytes = mediaList.reduce((sum, m) => sum + (m.fileSize || 0), 0)
+    // Only count storage for media uploaded by this user (userId matches)
+    const uploadedMedia = mediaList.filter((m) => {
+      const mediaUserId =
+        typeof m.userId === 'object'
+          ? (m.userId as Record<string, any>)._id
+          : m.userId
+      return mediaUserId === user?.id
+    })
+    const totalBytes = uploadedMedia.reduce(
+      (sum, m) => sum + (m.fileSize || 0),
+      0
+    )
     return formatFileSize(totalBytes)
   }
 
+  const getIsOwnMedia = (media: Media): boolean => {
+    const mediaUserId =
+      typeof media.userId === 'object'
+        ? (media.userId as Record<string, any>)._id
+        : media.userId
+    return mediaUserId === user?.id
+  }
+
   const stats = {
-    totalUploads: mediaList.length,
-    publicCount: mediaList.filter((m) => m.isPublic).length,
-    privateCount: mediaList.filter((m) => !m.isPublic).length,
+    totalUploads: mediaList.filter(getIsOwnMedia).length,
+    publicCount: mediaList.filter((m) => m.isPublic && getIsOwnMedia(m)).length,
+    privateCount: mediaList.filter((m) => !m.isPublic && getIsOwnMedia(m))
+      .length,
     sharedCount: mediaList.filter(
-      (m) => m.sharedWith && m.sharedWith.length > 0
+      (m) => m.sharedWith && m.sharedWith.length > 0 && getIsOwnMedia(m)
     ).length,
     storageUsed: calculateStorageUsed(),
   }
