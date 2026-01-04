@@ -17,8 +17,6 @@ import type { Media } from '@/types'
 import {
   LogOut,
   User,
-  Mail,
-  Shield,
   HardDrive,
   FileText,
   Lock,
@@ -232,81 +230,9 @@ export const DashboardPage = () => {
         </div>
 
         {/* Profile & Quick Actions */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* User Profile Card */}
-          <Card className="border-slate-700 bg-slate-800/50 backdrop-blur lg:col-span-1">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-2">
-                <User className="w-5 h-5 text-cyan-400" />
-                Profile
-              </CardTitle>
-              <CardDescription className="text-slate-400">
-                Your account details
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {/* Name */}
-              <div className="flex flex-col">
-                <span className="text-xs text-slate-400 uppercase font-semibold mb-1">
-                  Full Name
-                </span>
-                <span className="text-white font-medium">{user.name}</span>
-              </div>
-
-              {/* Email */}
-              <div className="flex flex-col">
-                <span className="text-xs text-slate-400 uppercase font-semibold mb-1 flex items-center gap-1">
-                  <Mail className="w-3 h-3" />
-                  Email
-                </span>
-                <span className="text-white font-medium text-sm break-all">
-                  {user.email}
-                </span>
-              </div>
-
-              {/* Role Badge */}
-              <div className="flex flex-col">
-                <span className="text-xs text-slate-400 uppercase font-semibold mb-1 flex items-center gap-1">
-                  <Shield className="w-3 h-3" />
-                  Role
-                </span>
-                <span
-                  className={`inline-block w-fit px-3 py-1 rounded-full text-xs font-bold ${
-                    user.role === 'admin'
-                      ? 'bg-red-500/20 text-red-300'
-                      : 'bg-cyan-500/20 text-cyan-300'
-                  }`}
-                >
-                  {user.role.toUpperCase()}
-                </span>
-              </div>
-
-              {/* Status Badges */}
-              <div className="flex gap-2 pt-2">
-                <span
-                  className={`text-xs px-2 py-1 rounded-full font-medium ${
-                    user.isActive
-                      ? 'bg-green-500/20 text-green-300'
-                      : 'bg-red-500/20 text-red-300'
-                  }`}
-                >
-                  {user.isActive ? '🟢 Active' : '🔴 Inactive'}
-                </span>
-                <span
-                  className={`text-xs px-2 py-1 rounded-full font-medium ${
-                    user.isEmailVerified
-                      ? 'bg-green-500/20 text-green-300'
-                      : 'bg-yellow-500/20 text-yellow-300'
-                  }`}
-                >
-                  {user.isEmailVerified ? '✓ Verified' : '⏳ Pending'}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-
+        <div className="grid grid-cols-1 gap-6">
           {/* Quick Actions */}
-          <Card className="border-slate-700 bg-slate-800/50 backdrop-blur lg:col-span-2">
+          <Card className="border-slate-700 bg-slate-800/50 backdrop-blur">
             <CardHeader>
               <CardTitle className="text-white">Quick Actions</CardTitle>
               <CardDescription className="text-slate-400">

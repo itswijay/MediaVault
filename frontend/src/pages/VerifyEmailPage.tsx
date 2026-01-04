@@ -107,7 +107,8 @@ export const VerifyEmailPage = () => {
     } catch (err) {
       const error = err as { response?: { data?: { message?: string } } }
       const errorMsg =
-        error?.response?.data?.message || 'Failed to verify OTP. Please try again.'
+        error?.response?.data?.message ||
+        'Failed to verify OTP. Please try again.'
       setError(errorMsg)
     } finally {
       setIsLoading(false)
@@ -256,7 +257,9 @@ export const VerifyEmailPage = () => {
                 </Button>
 
                 <div className="text-center">
-                  <p className="text-xs text-slate-400">Didn't receive the code?</p>
+                  <p className="text-xs text-slate-400">
+                    Didn't receive the code?
+                  </p>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -289,7 +292,8 @@ export const VerifyEmailPage = () => {
               <p className="text-slate-400">
                 <strong className="text-white">Spam folder?</strong>
                 <br />
-                If you don't see the email, check your spam or promotions folder.
+                If you don't see the email, check your spam or promotions
+                folder.
               </p>
             </div>
           </CardContent>

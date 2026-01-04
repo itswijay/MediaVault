@@ -422,6 +422,28 @@ export const UserProfilePage = () => {
                   </p>
                 </div>
               </div>
+
+              {/* Status Badges */}
+              <div className="flex gap-2 pt-2">
+                <span
+                  className={`text-xs px-2 py-1 rounded-full font-medium ${
+                    user.isActive
+                      ? 'bg-green-500/20 text-green-300'
+                      : 'bg-red-500/20 text-red-300'
+                  }`}
+                >
+                  {user.isActive ? '🟢 Active' : '🔴 Inactive'}
+                </span>
+                <span
+                  className={`text-xs px-2 py-1 rounded-full font-medium ${
+                    user.isEmailVerified
+                      ? 'bg-green-500/20 text-green-300'
+                      : 'bg-yellow-500/20 text-yellow-300'
+                  }`}
+                >
+                  {user.isEmailVerified ? '✓ Verified' : '⏳ Pending'}
+                </span>
+              </div>
             </CardContent>
           </Card>
 
