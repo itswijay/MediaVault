@@ -138,7 +138,7 @@ export const LoginPage = () => {
             alt="MediaVault Logo"
             className="w-20 h-20 mx-auto mb-4 object-contain"
           />
-          <h1 className="text-3xl font-bold text-white mb-2">MediaVault</h1>
+          <h1 className="text-5xl font-bold text-white mb-2">MediaVault</h1>
           <p className="text-slate-400">Your Personal Media Gallery</p>
         </div>
 
