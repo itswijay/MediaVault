@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/card'
 import { StatCard } from '@/components/StatCard'
 import { MediaCard } from '@/components/MediaCard'
+import { Footer } from '@/components/Footer'
 import { getUserMedia } from '@/services/mediaService'
 import type { Media } from '@/types'
 import {
@@ -467,6 +468,9 @@ export const DashboardPage = () => {
           </Card>
         )}
       </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   )
 }

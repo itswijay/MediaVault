@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { MediaGallery } from '@/components/MediaGallery'
 import { Upload, ArrowLeft, LogOut } from 'lucide-react'
 import logoImg from '../assets/mediavault.png'
+import { Footer } from '@/components/Footer'
 
 export const MediaGalleryPage = () => {
   const navigate = useNavigate()
@@ -73,13 +74,7 @@ export const MediaGalleryPage = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-700 bg-slate-900/50 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <p className="text-center text-slate-500 text-sm">
-            &copy; 2024 MediaVault. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
