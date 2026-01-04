@@ -17,6 +17,30 @@ import {
 const router = express.Router()
 
 /**
+ * Admin Routes (Authentication + Admin role required)
+ * Must be defined BEFORE /:id to avoid matching conflicts
+ */
+
+/**
+ * GET /api/contact/admin
+ * Get all contact messages with pagination and sorting
+ * Admin only
+ */
+router.get('/admin', authMiddleware, roleMiddleware('admin'), getAllMessages)
+
+/**
+ * DELETE /api/contact/admin/:id
+ * Delete any contact message
+ * Admin only
+ */
+router.delete(
+  '/admin/:id',
+  authMiddleware,
+  roleMiddleware('admin'),
+  adminDeleteMessage
+)
+
+/**
  * Public Routes (No authentication required)
  */
 
@@ -50,29 +74,6 @@ router.put('/:id', authMiddleware, updateMessage)
  * Only owner can delete
  */
 router.delete('/:id', authMiddleware, deleteMessage)
-
-/**
- * Admin Routes (Authentication + Admin role required)
- */
-
-/**
- * GET /api/admin/contact
- * Get all contact messages with pagination and sorting
- * Admin only
- */
-router.get('/admin', authMiddleware, roleMiddleware('admin'), getAllMessages)
-
-/**
- * DELETE /api/admin/contact/:id
- * Delete any contact message
- * Admin only
- */
-router.delete(
-  '/admin/:id',
-  authMiddleware,
-  roleMiddleware('admin'),
-  adminDeleteMessage
-)
 
 /**
  * PUT /api/contact/:id/read
