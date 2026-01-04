@@ -251,7 +251,14 @@ const updateMedia = async (req, res) => {
     // Update fields
     if (title) media.title = title
     if (description !== undefined) media.description = description
-    if (tags) media.tags = tags.split(',').map((tag) => tag.trim())
+    if (tags) {
+      // Handle tags as either string or array
+      if (typeof tags === 'string') {
+        media.tags = tags.split(',').map((tag) => tag.trim())
+      } else if (Array.isArray(tags)) {
+        media.tags = tags
+      }
+    }
     if (isPublic !== undefined)
       media.isPublic = isPublic === 'true' || isPublic === true
 

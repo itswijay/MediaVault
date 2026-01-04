@@ -51,6 +51,7 @@ export const ImageDetailPage = () => {
   const [editData, setEditData] = useState({
     title: '',
     description: '',
+    tags: '',
     isPublic: false,
   })
 
@@ -233,6 +234,7 @@ export const ImageDetailPage = () => {
     setEditData({
       title: media.title,
       description: media.description || '',
+      tags: media.tags ? media.tags.join(', ') : '',
       isPublic: media.isPublic,
     })
     setIsEditing(true)
@@ -246,9 +248,17 @@ export const ImageDetailPage = () => {
 
     try {
       setIsLoading(true)
+
+      // Parse tags from comma-separated string to array
+      const tagsList = editData.tags
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter((tag) => tag.length > 0)
+
       const updated = await updateMedia(media._id || media.id || '', {
         title: editData.title,
         description: editData.description,
+        tags: tagsList,
         isPublic: editData.isPublic,
       })
 
@@ -744,6 +754,25 @@ export const ImageDetailPage = () => {
                     className="w-full bg-slate-700/50 border border-slate-600 text-white placeholder:text-slate-500 rounded-md p-2 resize-none"
                     rows={3}
                   />
+                </div>
+
+                {/* Tags Input */}
+                <div className="space-y-2 mb-4">
+                  <Label htmlFor="edit-tags" className="text-slate-300">
+                    Tags
+                  </Label>
+                  <Input
+                    id="edit-tags"
+                    value={editData.tags}
+                    onChange={(e) =>
+                      setEditData({ ...editData, tags: e.target.value })
+                    }
+                    placeholder="Comma-separated tags (e.g., nature, sunset, landscape)"
+                    className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-500"
+                  />
+                  <p className="text-xs text-slate-400">
+                    Separate tags with commas
+                  </p>
                 </div>
 
                 {/* Public Toggle */}
