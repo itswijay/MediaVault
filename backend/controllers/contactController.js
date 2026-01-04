@@ -36,7 +36,7 @@ const submitMessage = async (req, res) => {
       name,
       email,
       message,
-      userId: req.user?.id || null, // Link to user if authenticated
+      userId: (req.user?.userId || req.user?.id) || null, // Link to user if authenticated
     })
 
     await contact.save()
@@ -66,12 +66,13 @@ const getUserMessages = async (req, res) => {
     const page = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit) || 10
     const skip = (page - 1) * limit
+    const userId = req.user.userId || req.user.id
 
     // Get total count for authenticated user's messages
-    const total = await Contact.countDocuments({ userId: req.user.id })
+    const total = await Contact.countDocuments({ userId })
 
     // Get paginated messages
-    const messages = await Contact.find({ userId: req.user.id })
+    const messages = await Contact.find({ userId })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
@@ -117,7 +118,8 @@ const updateMessage = async (req, res) => {
     }
 
     // Check ownership
-    if (contact.userId && contact.userId.toString() !== req.user.id) {
+    const userId = req.user.userId || req.user.id
+    if (contact.userId && contact.userId.toString() !== userId) {
       return res.status(403).json({
         success: false,
         message: 'You can only update your own messages.',
@@ -190,7 +192,8 @@ const deleteMessage = async (req, res) => {
     }
 
     // Check ownership
-    if (contact.userId && contact.userId.toString() !== req.user.id) {
+    const userId = req.user.userId || req.user.id
+    if (contact.userId && contact.userId.toString() !== userId) {
       return res.status(403).json({
         success: false,
         message: 'You can only delete your own messages.',
