@@ -82,6 +82,13 @@ router.delete('/:id', authMiddleware, deleteMedia)
 router.put('/:id/share', authMiddleware, shareMedia)
 
 /**
+ * POST /api/media/:id/share
+ * Share media with other users (alternative POST method)
+ * Only owner can share
+ */
+router.post('/:id/share', authMiddleware, shareMedia)
+
+/**
  * POST /api/media/download-zip
  * Download multiple media files as ZIP archive
  * User must have access to all media files

@@ -710,7 +710,6 @@ export const ImageDetailPage = () => {
         onClose={() => setIsShareModalOpen(false)}
         mediaId={media._id || media.id || ''}
         mediaTitle={media.title}
-        sharedWith={media.sharedWith}
       />
 
       {/* Edit Modal */}

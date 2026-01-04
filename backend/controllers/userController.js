@@ -343,6 +343,46 @@ const hardDeleteUser = async (req, res) => {
   }
 }
 
+/**
+ * Search user by email
+ * GET /api/users/search?email=...
+ */
+const searchByEmail = async (req, res) => {
+  try {
+    const { email } = req.query
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email query parameter is required.',
+      })
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase() }).select(
+      'name email profileImage _id'
+    )
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found.',
+      })
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: user,
+    })
+  } catch (error) {
+    console.error('Search user by email error:', error)
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to search user.',
+      error: error.message,
+    })
+  }
+}
+
 export {
   getUserProfile,
   updateUserProfile,
@@ -351,4 +391,5 @@ export {
   updateUser,
   softDeleteUser,
   hardDeleteUser,
+  searchByEmail,
 }

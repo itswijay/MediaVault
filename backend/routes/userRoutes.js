@@ -7,6 +7,7 @@ import {
   updateUser,
   softDeleteUser,
   hardDeleteUser,
+  searchByEmail,
 } from '../controllers/userController.js'
 import { authMiddleware, roleMiddleware } from '../middlewares/auth.js'
 
@@ -24,6 +25,14 @@ const router = express.Router()
  * Admin only
  */
 router.get('/admin', authMiddleware, roleMiddleware('admin'), getAllUsers)
+
+/**
+ * GET /api/users/search
+ * Search user by email
+ * Query params: email
+ * Public route (no auth required)
+ */
+router.get('/search', searchByEmail)
 
 /**
  * Protected Routes (Authentication required)
