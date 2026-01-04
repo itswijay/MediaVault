@@ -146,7 +146,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           <h2 className="text-lg font-semibold text-white">Share Media</h2>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white transition-colors"
+            className="text-slate-100 hover:text-white transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -196,7 +196,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
                     setEmail(e.target.value)
                     handleSearchUser(e.target.value)
                   }}
-                  className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-500"
+                  className="mt-2 bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-500"
                 />
               </div>
             </div>
