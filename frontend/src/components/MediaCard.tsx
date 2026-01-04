@@ -35,7 +35,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
   onView,
   isLoading,
 }) => {
-  const mediaId = media._id || media.id
+  const mediaId = (media._id || media.id) as string
   return (
     <Card className="border-slate-700 bg-slate-800/50 backdrop-blur overflow-hidden group transition-all duration-300 hover:border-cyan-500/50">
       {/* Image Container */}
@@ -44,12 +44,12 @@ export const MediaCard: React.FC<MediaCardProps> = ({
           src={media.imageUrl}
           alt={media.title}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-          onClick={() => onView?.(mediaId)}
+          onClick={() => mediaId && onView?.(mediaId)}
         />
 
         {/* Overlay */}
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
-          {onView && (
+          {onView && mediaId && (
             <button
               onClick={() => onView(mediaId)}
               className="p-2 rounded-lg bg-cyan-500/80 hover:bg-cyan-600 text-white transition-colors"
@@ -58,7 +58,7 @@ export const MediaCard: React.FC<MediaCardProps> = ({
               <Eye className="w-5 h-5" />
             </button>
           )}
-          {onDelete && (
+          {onDelete && mediaId && (
             <button
               onClick={() => onDelete(mediaId)}
               disabled={isLoading}

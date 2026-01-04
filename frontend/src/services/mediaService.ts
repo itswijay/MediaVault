@@ -66,6 +66,25 @@ export const getSharedMedia = async (limit: number = 5): Promise<Media[]> => {
   }
 }
 
+// Get public media
+export const getPublicMedia = async (
+  page: number = 1,
+  limit: number = 10
+): Promise<Media[]> => {
+  try {
+    const response = await api.get<PaginatedMediaResponse>(
+      `/media/public?page=${page}&limit=${limit}`
+    )
+    if (response.data.success && response.data.data?.media) {
+      return response.data.data.media
+    }
+    return []
+  } catch (error) {
+    console.error('Error fetching public media:', error)
+    throw error
+  }
+}
+
 // Get media by ID
 export const getMediaById = async (id: string): Promise<Media | null> => {
   try {
@@ -181,6 +200,7 @@ export default {
   getUserMedia,
   getRecentMedia,
   getSharedMedia,
+  getPublicMedia,
   getMediaById,
   uploadMedia,
   updateMedia,
