@@ -14,6 +14,7 @@ import { DashboardPage } from './pages/DashboardPage'
 import { MediaGalleryPage } from './pages/MediaGalleryPage'
 import { ImageUploadPage } from './pages/ImageUploadPage'
 import { ImageDetailPage } from './pages/ImageDetailPage'
+import { UserProfilePage } from './pages/UserProfilePage'
 
 function App() {
   return (
@@ -59,14 +60,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* <Route
+          <Route
             path="/profile"
             element={
               <ProtectedRoute>
-                <ProfilePage />
+                <UserProfilePage />
               </ProtectedRoute>
             }
-          /> */}
+          />
 
           {/* Admin Routes */}
           {/* <Route
