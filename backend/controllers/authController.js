@@ -1,10 +1,11 @@
 import User from '../models/User.js'
 import {
   generateAccessToken,
+  generateTokens,
   verifyAccessToken,
   decodeToken,
 } from '../utils/jwt.js'
-import { sendOTP, verifyOTP, clearOTP } from '../utils/otp.js'
+import { sendOTP, verifyOTP, isOTPVerified, clearOTP } from '../utils/otp.js'
 
 // Helper function to maintain backward compatibility
 const generateToken = (payload) => {
@@ -73,12 +74,11 @@ const register = async (req, res) => {
     // Save user (password will be hashed by middleware)
     await user.save()
 
-    // Generate JWT token
-    const token = generateToken({
-      id: user._id,
-      email: user.email,
-      role: user.role,
-    })
+    // Generate JWT tokens
+    const { accessToken, refreshToken } = generateTokens(
+      user._id.toString(),
+      user.role
+    )
 
     // Send OTP for verification
     const otpResult = await sendOTP(email, 'registration')
@@ -88,12 +88,17 @@ const register = async (req, res) => {
       message:
         'Registration successful. Please verify your email using the OTP sent to your email.',
       data: {
-        token,
+        token: accessToken,
+        refreshToken,
         user: {
           id: user._id,
           name: user.name,
           email: user.email,
           role: user.role,
+          isEmailVerified: user.isEmailVerified,
+          isActive: user.isActive,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
         },
       },
       otpSent: otpResult.success,
@@ -252,19 +257,19 @@ const login = async (req, res) => {
       })
     }
 
-    // Generate JWT token
-    const token = generateToken({
-      id: user._id,
-      email: user.email,
-      role: user.role,
-    })
+    // Generate JWT tokens
+    const { accessToken, refreshToken } = generateTokens(
+      user._id.toString(),
+      user.role
+    )
 
     // Return response
     return res.status(200).json({
       success: true,
       message: 'Login successful.',
       data: {
-        token,
+        token: accessToken,
+        refreshToken,
         user: {
           id: user._id,
           name: user.name,
@@ -272,6 +277,9 @@ const login = async (req, res) => {
           role: user.role,
           profileImage: user.profileImage,
           isEmailVerified: user.isEmailVerified,
+          isActive: user.isActive,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
         },
       },
     })
@@ -333,18 +341,18 @@ const googleLogin = async (req, res) => {
       })
     }
 
-    // Generate JWT token
-    const token = generateToken({
-      id: user._id,
-      email: user.email,
-      role: user.role,
-    })
+    // Generate JWT tokens
+    const { accessToken, refreshToken } = generateTokens(
+      user._id.toString(),
+      user.role
+    )
 
     return res.status(200).json({
       success: true,
       message: 'Google login successful.',
       data: {
-        token,
+        token: accessToken,
+        refreshToken,
         user: {
           id: user._id,
           name: user.name,
@@ -352,6 +360,9 @@ const googleLogin = async (req, res) => {
           role: user.role,
           profileImage: user.profileImage,
           isEmailVerified: user.isEmailVerified,
+          isActive: user.isActive,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
         },
       },
     })
@@ -446,20 +457,11 @@ const resetPassword = async (req, res) => {
       })
     }
 
-    // Verify OTP
-    const otpResult = verifyOTP(email, otp)
-    if (!otpResult.success) {
+    // Check if OTP has been verified (should be done before calling this endpoint)
+    if (!isOTPVerified(email)) {
       return res.status(400).json({
         success: false,
-        message: otpResult.message,
-      })
-    }
-
-    // Check if OTP purpose is for password reset
-    if (otpResult.purpose !== 'forgot-password') {
-      return res.status(400).json({
-        success: false,
-        message: 'This OTP is not for password reset.',
+        message: 'OTP verification required. Please verify your OTP first.',
       })
     }
 
@@ -475,6 +477,9 @@ const resetPassword = async (req, res) => {
     // Update password
     user.password = newPassword
     await user.save()
+
+    // Clear OTP after successful password reset
+    clearOTP(email)
 
     return res.status(200).json({
       success: true,

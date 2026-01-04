@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import axios from 'axios'
 import api from '../services/api'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
@@ -47,21 +48,24 @@ export const ForgotPasswordPage = () => {
   // Password strength calculation
   const calculatePasswordStrength = (pwd: string) => {
     if (pwd.length < 6) return 'weak'
-    if (pwd.length < 8) return 'fair'
+
     const hasUpperCase = /[A-Z]/.test(pwd)
     const hasLowerCase = /[a-z]/.test(pwd)
     const hasNumbers = /\d/.test(pwd)
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(pwd)
 
-    const strength = [
+    const complexity = [
       hasUpperCase,
       hasLowerCase,
       hasNumbers,
       hasSpecialChar,
     ].filter(Boolean).length
 
-    if (strength >= 3) return 'strong'
-    if (strength >= 2) return 'fair'
+    // Strong: 3+ character types AND length >= 8
+    if (complexity >= 3 && pwd.length >= 8) return 'strong'
+    // Fair: 2+ character types OR length >= 8
+    if (complexity >= 2 || pwd.length >= 8) return 'fair'
+    // Weak: only 1 character type
     return 'weak'
   }
 
@@ -96,8 +100,18 @@ export const ForgotPasswordPage = () => {
         startResendCountdown()
       }
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to send OTP'
+      let errorMessage = 'Failed to send OTP'
+
+      if (axios.isAxiosError(err)) {
+        if (err.response?.data?.message) {
+          errorMessage = err.response.data.message
+        } else if (err.message) {
+          errorMessage = err.message
+        }
+      } else if (err instanceof Error) {
+        errorMessage = err.message
+      }
+
       setError(errorMessage)
       console.error('Send OTP error:', err)
     } finally {
@@ -148,8 +162,18 @@ export const ForgotPasswordPage = () => {
         setStep('password-reset')
       }
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'OTP verification failed'
+      let errorMessage = 'OTP verification failed'
+
+      if (axios.isAxiosError(err)) {
+        if (err.response?.data?.message) {
+          errorMessage = err.response.data.message
+        } else if (err.message) {
+          errorMessage = err.message
+        }
+      } else if (err instanceof Error) {
+        errorMessage = err.message
+      }
+
       setError(errorMessage)
       console.error('OTP verification error:', err)
     } finally {
@@ -198,8 +222,18 @@ export const ForgotPasswordPage = () => {
         }, 2000)
       }
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to reset password'
+      let errorMessage = 'Failed to reset password'
+
+      if (axios.isAxiosError(err)) {
+        if (err.response?.data?.message) {
+          errorMessage = err.response.data.message
+        } else if (err.message) {
+          errorMessage = err.message
+        }
+      } else if (err instanceof Error) {
+        errorMessage = err.message
+      }
+
       setError(errorMessage)
       console.error('Reset password error:', err)
     } finally {
@@ -221,8 +255,18 @@ export const ForgotPasswordPage = () => {
         startResendCountdown()
       }
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to resend OTP'
+      let errorMessage = 'Failed to resend OTP'
+
+      if (axios.isAxiosError(err)) {
+        if (err.response?.data?.message) {
+          errorMessage = err.response.data.message
+        } else if (err.message) {
+          errorMessage = err.message
+        }
+      } else if (err instanceof Error) {
+        errorMessage = err.message
+      }
+
       setError(errorMessage)
     } finally {
       setIsLoading(false)

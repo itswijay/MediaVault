@@ -161,9 +161,9 @@ const verifyOTP = (email, otp) => {
       }
     }
 
-    // OTP is valid, get purpose and delete from store
+    // OTP is valid, get purpose and mark as verified (but don't delete yet)
     const purpose = otpData.purpose
-    delete otpStore[email]
+    otpData.verified = true
 
     return {
       success: true,
@@ -178,6 +178,22 @@ const verifyOTP = (email, otp) => {
       error: error.message,
     }
   }
+}
+
+/**
+ * Check if an OTP is verified for an email (without verifying again)
+ * @param {string} email - User's email address
+ * @returns {boolean} True if OTP is verified and not expired
+ */
+const isOTPVerified = (email) => {
+  if (!otpStore[email]) return false
+
+  if (Date.now() > otpStore[email].expiresAt) {
+    delete otpStore[email]
+    return false
+  }
+
+  return otpStore[email].verified === true
 }
 
 /**
@@ -222,6 +238,7 @@ export {
   generateOTP,
   sendOTP,
   verifyOTP,
+  isOTPVerified,
   hasOTP,
   clearOTP,
   getOTPRemainingTime,

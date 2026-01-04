@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import axios from 'axios'
 import { useAuth } from '../hooks/useAuth'
 import api from '../services/api'
 import { Button } from '../components/ui/button'
@@ -48,10 +49,6 @@ export const LoginPage = () => {
       setError('Password is required')
       return false
     }
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters')
-      return false
-    }
     return true
   }
 
@@ -83,8 +80,18 @@ export const LoginPage = () => {
         navigate('/dashboard')
       }
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Login failed. Please try again.'
+      let errorMessage = 'Login failed. Please try again.'
+
+      if (axios.isAxiosError(err)) {
+        if (err.response?.data?.message) {
+          errorMessage = err.response.data.message
+        } else if (err.message) {
+          errorMessage = err.message
+        }
+      } else if (err instanceof Error) {
+        errorMessage = err.message
+      }
+
       setError(errorMessage)
       console.error('Login error:', err)
     } finally {
