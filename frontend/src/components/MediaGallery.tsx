@@ -182,19 +182,6 @@ export const MediaGallery: React.FC<MediaGalleryProps> = ({
     }))
   }
 
-  // Toggle public/private filter
-  const handleTogglePublicFilter = () => {
-    setFilters((prev) => ({
-      ...prev,
-      isPublicFilter:
-        prev.isPublicFilter === null
-          ? true
-          : prev.isPublicFilter
-          ? false
-          : null,
-    }))
-  }
-
   // Clear all filters
   const handleClearFilters = () => {
     setFilters((prev) => ({
@@ -270,26 +257,56 @@ export const MediaGallery: React.FC<MediaGalleryProps> = ({
           </div>
 
           {/* Filter Controls */}
-          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-            {/* Public/Private Filter */}
+          <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center flex-wrap">
+            {/* Public/Private Filter Buttons */}
             {!isPublicGallery && (
-              <Button
-                variant={
-                  filters.isPublicFilter === null
-                    ? 'outline'
-                    : filters.isPublicFilter
-                    ? 'default'
-                    : 'secondary'
-                }
-                size="sm"
-                onClick={handleTogglePublicFilter}
-              >
-                {filters.isPublicFilter === null
-                  ? 'All Media'
-                  : filters.isPublicFilter
-                  ? 'Public'
-                  : 'Private'}
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant={
+                    filters.isPublicFilter === null ? 'default' : 'outline'
+                  }
+                  size="sm"
+                  onClick={() => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      isPublicFilter: null,
+                    }))
+                  }}
+                  className="text-xs"
+                >
+                  All Media
+                </Button>
+                <Button
+                  variant={
+                    filters.isPublicFilter === true ? 'default' : 'outline'
+                  }
+                  size="sm"
+                  onClick={() => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      isPublicFilter: true,
+                    }))
+                  }}
+                  className="text-xs"
+                >
+                  Public
+                </Button>
+                <Button
+                  variant={
+                    filters.isPublicFilter === false ? 'default' : 'outline'
+                  }
+                  size="sm"
+                  onClick={() => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      isPublicFilter: false,
+                    }))
+                  }}
+                  className="text-xs"
+                >
+                  Private
+                </Button>
+              </div>
             )}
 
             {/* Clear Filters Button */}
