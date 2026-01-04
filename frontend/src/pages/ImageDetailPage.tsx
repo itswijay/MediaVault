@@ -3,12 +3,15 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { ShareModal } from '@/components/ShareModal'
 import { Footer } from '@/components/Footer'
 import {
   getMediaById,
   deleteMedia,
   getUserMedia,
+  updateMedia,
 } from '@/services/mediaService'
 import type { Media } from '@/types'
 import {
@@ -44,6 +47,12 @@ export const ImageDetailPage = () => {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editData, setEditData] = useState({
+    title: '',
+    description: '',
+    isPublic: false,
+  })
 
   // Fetch media
   useEffect(() => {
@@ -176,15 +185,22 @@ export const ImageDetailPage = () => {
   const handleDownload = async () => {
     if (!media) return
     try {
+      setIsLoading(true)
+      const response = await fetch(media.imageUrl)
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
-      link.href = media.imageUrl
+      link.href = url
       link.download = `${media.title}.jpg`
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
     } catch (err) {
       console.error('Error downloading:', err)
       setError('Failed to download media')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -213,8 +229,51 @@ export const ImageDetailPage = () => {
   }
 
   const handleEdit = () => {
-    // TODO: Implement edit page
-    console.log('Edit functionality to be implemented')
+    if (!media) return
+    setEditData({
+      title: media.title,
+      description: media.description || '',
+      isPublic: media.isPublic,
+    })
+    setIsEditing(true)
+  }
+
+  const handleSaveEdit = async () => {
+    if (!media || !editData.title.trim()) {
+      setError('Title is required')
+      return
+    }
+
+    try {
+      setIsLoading(true)
+      const updated = await updateMedia(media._id || media.id || '', {
+        title: editData.title,
+        description: editData.description,
+        isPublic: editData.isPublic,
+      })
+
+      // Unwrap the response if it's nested
+      const mediaData =
+        (
+          updated as {
+            media?: typeof updated
+          } & typeof updated
+        )?.media || updated
+
+      setMedia(mediaData)
+      setIsEditing(false)
+      setError(null)
+    } catch (err) {
+      console.error('Error updating media:', err)
+      setError('Failed to update media')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleCancelEdit = () => {
+    setIsEditing(false)
+    setError(null)
   }
 
   const handleLogout = () => {
@@ -643,6 +702,95 @@ export const ImageDetailPage = () => {
         mediaTitle={media.title}
         sharedWith={media.sharedWith}
       />
+
+      {/* Edit Modal */}
+      {isEditing && media && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <Card className="w-full max-w-md border-slate-700 bg-slate-800">
+            <CardContent className="pt-6 space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-4">
+                  Edit Media
+                </h3>
+
+                {/* Title Input */}
+                <div className="space-y-2 mb-4">
+                  <Label htmlFor="edit-title" className="text-slate-300">
+                    Title
+                  </Label>
+                  <Input
+                    id="edit-title"
+                    value={editData.title}
+                    onChange={(e) =>
+                      setEditData({ ...editData, title: e.target.value })
+                    }
+                    placeholder="Media title"
+                    className="bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-500"
+                  />
+                </div>
+
+                {/* Description Input */}
+                <div className="space-y-2 mb-4">
+                  <Label htmlFor="edit-description" className="text-slate-300">
+                    Description
+                  </Label>
+                  <textarea
+                    id="edit-description"
+                    value={editData.description}
+                    onChange={(e) =>
+                      setEditData({ ...editData, description: e.target.value })
+                    }
+                    placeholder="Media description"
+                    className="w-full bg-slate-700/50 border border-slate-600 text-white placeholder:text-slate-500 rounded-md p-2 resize-none"
+                    rows={3}
+                  />
+                </div>
+
+                {/* Public Toggle */}
+                <div className="space-y-2 mb-6">
+                  <Label className="text-slate-300 flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={editData.isPublic}
+                      onChange={(e) =>
+                        setEditData({ ...editData, isPublic: e.target.checked })
+                      }
+                      className="w-4 h-4"
+                    />
+                    <span>Make this media public</span>
+                  </Label>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handleSaveEdit}
+                    disabled={isLoading}
+                    className="flex-1 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold"
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      'Save Changes'
+                    )}
+                  </Button>
+                  <Button
+                    onClick={handleCancelEdit}
+                    disabled={isLoading}
+                    variant="outline"
+                    className="flex-1 border-slate-600 text-slate-300 hover:bg-slate-700/50"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Footer */}
       <Footer />
