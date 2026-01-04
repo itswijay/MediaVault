@@ -51,8 +51,9 @@ const uploadMedia = async (req, res) => {
     }
 
     // Create media document
+    const userId = req.user.userId || req.user.id
     const media = new Media({
-      userId: req.user.id,
+      userId,
       title,
       description: description || '',
       tags: tags ? tags.split(',').map((tag) => tag.trim()) : [],
@@ -92,12 +93,13 @@ const getUserMedia = async (req, res) => {
     const page = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit) || 10
     const skip = (page - 1) * limit
+    const userId = req.user.userId || req.user.id
 
     // Get total count
-    const total = await Media.countDocuments({ userId: req.user.id })
+    const total = await Media.countDocuments({ userId })
 
     // Get paginated media
-    const media = await Media.find({ userId: req.user.id })
+    const media = await Media.find({ userId })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
@@ -192,10 +194,10 @@ const getMediaById = async (req, res) => {
     }
 
     // Check access: owner, admin, or in sharedWith
-    const isOwner = req.user && media.userId._id.toString() === req.user.id
+    const userId = req.user?.userId || req.user?.id
+    const isOwner = req.user && media.userId._id.toString() === userId
     const isShared =
-      req.user &&
-      media.sharedWith.some((userId) => userId._id.toString() === req.user.id)
+      req.user && media.sharedWith.some((uid) => uid._id.toString() === userId)
     const isPublic = media.isPublic
 
     if (!isOwner && !isShared && !isPublic) {
@@ -238,7 +240,8 @@ const updateMedia = async (req, res) => {
     }
 
     // Check ownership
-    if (media.userId._id.toString() !== req.user.id) {
+    const userId = req.user.userId || req.user.id
+    if (media.userId._id.toString() !== userId) {
       return res.status(403).json({
         success: false,
         message: 'You can only update your own media.',
@@ -288,7 +291,8 @@ const deleteMedia = async (req, res) => {
     }
 
     // Check ownership
-    if (media.userId._id.toString() !== req.user.id) {
+    const userId = req.user.userId || req.user.id
+    if (media.userId._id.toString() !== userId) {
       return res.status(403).json({
         success: false,
         message: 'You can only delete your own media.',
@@ -352,11 +356,8 @@ const searchMedia = async (req, res) => {
     // Only show public media or user's own media
     if (!isPublicParam || isPublicParam === 'false') {
       if (req.user) {
-        query.$or = [
-          { userId: req.user.id },
-          { sharedWith: req.user.id },
-          { isPublic: true },
-        ]
+        const userId = req.user.userId || req.user.id
+        query.$or = [{ userId }, { sharedWith: userId }, { isPublic: true }]
       } else {
         query.isPublic = true
       }
@@ -419,7 +420,8 @@ const shareMedia = async (req, res) => {
     }
 
     // Check ownership
-    if (media.userId._id.toString() !== req.user.id) {
+    const userId = req.user.userId || req.user.id
+    if (media.userId._id.toString() !== userId) {
       return res.status(403).json({
         success: false,
         message: 'You can only share your own media.',
@@ -476,10 +478,11 @@ const downloadMediaZip = async (req, res) => {
     }
 
     // Check access to all media
+    const userId = req.user.userId || req.user.id
     for (const media of mediaList) {
-      const isOwner = media.userId.toString() === req.user.id
+      const isOwner = media.userId._id.toString() === userId
       const isShared = media.sharedWith.some(
-        (userId) => userId.toString() === req.user.id
+        (uid) => uid._id.toString() === userId
       )
       const isPublic = media.isPublic
 
