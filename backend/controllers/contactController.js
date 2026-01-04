@@ -36,7 +36,7 @@ const submitMessage = async (req, res) => {
       name,
       email,
       message,
-      userId: (req.user?.userId || req.user?.id) || null, // Link to user if authenticated
+      userId: req.user?.userId || req.user?.id || null, // Link to user if authenticated
     })
 
     await contact.save()
@@ -119,7 +119,7 @@ const updateMessage = async (req, res) => {
 
     // Check ownership
     const userId = req.user.userId || req.user.id
-    if (contact.userId && contact.userId.toString() !== userId) {
+    if (contact.userId && contact.userId._id.toString() !== userId) {
       return res.status(403).json({
         success: false,
         message: 'You can only update your own messages.',
@@ -193,7 +193,7 @@ const deleteMessage = async (req, res) => {
 
     // Check ownership
     const userId = req.user.userId || req.user.id
-    if (contact.userId && contact.userId.toString() !== userId) {
+    if (contact.userId && contact.userId._id.toString() !== userId) {
       return res.status(403).json({
         success: false,
         message: 'You can only delete your own messages.',
