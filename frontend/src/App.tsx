@@ -12,6 +12,7 @@ import { RegisterPage } from './pages/RegisterPage'
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { MediaGalleryPage } from './pages/MediaGalleryPage'
+import { ImageUploadPage } from './pages/ImageUploadPage'
 
 function App() {
   return (
@@ -41,15 +42,15 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* <Route
+          <Route
             path="/upload"
             element={
               <ProtectedRoute>
-                <UploadPage />
+                <ImageUploadPage />
               </ProtectedRoute>
             }
           />
-          <Route
+          {/* <Route
             path="/profile"
             element={
               <ProtectedRoute>
