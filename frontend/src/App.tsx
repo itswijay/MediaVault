@@ -13,6 +13,7 @@ import { ForgotPasswordPage } from './pages/ForgotPasswordPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { MediaGalleryPage } from './pages/MediaGalleryPage'
 import { ImageUploadPage } from './pages/ImageUploadPage'
+import { ImageDetailPage } from './pages/ImageDetailPage'
 
 function App() {
   return (
@@ -47,6 +48,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ImageUploadPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/media/:id"
+            element={
+              <ProtectedRoute>
+                <ImageDetailPage />
               </ProtectedRoute>
             }
           />

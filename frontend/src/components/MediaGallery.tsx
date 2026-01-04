@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card } from '@/components/ui/card'
@@ -27,6 +28,7 @@ export const MediaGallery: React.FC<MediaGalleryProps> = ({
   isPublicGallery = false,
   refreshTrigger,
 }) => {
+  const navigate = useNavigate()
   // State
   const [allMedia, setAllMedia] = useState<Media[]>([])
   const [filteredMedia, setFilteredMedia] = useState<Media[]>([])
@@ -159,9 +161,7 @@ export const MediaGallery: React.FC<MediaGalleryProps> = ({
 
   // Handle view action
   const handleViewMedia = (id: string) => {
-    // This will be implemented when creating MediaDetailPage
-    console.log('View media:', id)
-    // navigate(`/media/${id}`)
+    navigate(`/media/${id}`)
   }
 
   // Handle search input change
