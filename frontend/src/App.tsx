@@ -6,9 +6,11 @@ import {
   Navigate,
 } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
+import { ProtectedRoute } from './components/ProtectedRoute'
 import { LoginPage } from './pages/LoginPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage'
+import { DashboardPage } from './pages/DashboardPage'
 
 function App() {
   return (
@@ -22,7 +24,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
           {/* Protected Routes */}
-          {/* <Route
+          <Route
             path="/dashboard"
             element={
               <ProtectedRoute>
@@ -30,7 +32,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
+          {/* <Route
             path="/gallery"
             element={
               <ProtectedRoute>
@@ -80,5 +82,4 @@ function App() {
     </Router>
   )
 }
-
 export default App
