@@ -1,20 +1,50 @@
-# Media Gallery Management System - MediaVault
+# MediaVault - Media Gallery Management System
 
-A full-stack MERN application for managing media galleries with secure authentication, file uploads, and contact form integration.
+A full-stack MERN application for securely managing and sharing media galleries with advanced authentication, cloud storage integration, and administrative controls.
 
-## Tech Stack
+## Overview
 
-- Frontend: React, Tailwind CSS
-- Backend: Node.js, Express.js
-- Database: MongoDB
-- Authentication: Google OAuth 2.0, JWT, Nodemailer (OTP)
-- File Storage: Cloudinary (preferred) or local filesystem
+MediaVault provides users with a comprehensive platform to upload, organize, and share media files. The system features JWT-based authentication, Google OAuth integration, email verification via OTP, role-based access control, and cloud storage support through Cloudinary.
 
-## Setup Instructions
+## Technology Stack
+
+**Frontend:**
+
+- React 19 with TypeScript
+- React Router for navigation
+- Tailwind CSS for styling
+- Axios for API communication
+- Google OAuth integration
+
+**Backend:**
+
+- Node.js with Express.js
+- MongoDB with Mongoose ODM
+- JWT for token-based authentication
+- Nodemailer for email services
+- Cloudinary SDK for media storage
+- Multer for file uploads
+
+**DevOps & Tools:**
+
+- Vite for frontend bundling
+- Nodemon for backend development
+- ESLint and TypeScript for code quality
+
+## Installation & Setup
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- MongoDB (local or Atlas cloud)
+- npm or yarn package manager
+- Cloudinary account (for media storage)
+- Gmail account with app password (for OTP service)
+- Google OAuth credentials
 
 ### Backend Setup
 
-1. Navigate to backend directory:
+1. Navigate to the backend directory:
 
    ```bash
    cd backend
@@ -26,148 +56,235 @@ A full-stack MERN application for managing media galleries with secure authentic
    npm install
    ```
 
-3. Create `.env` file in the backend directory with the following variables:
+3. Create a `.env` file with the following variables:
 
    ```
-   # Database Configuration
-   MONGODB_URI=mongodb://localhost:27017/media-vault
-   # OR for MongoDB Atlas:
+   # Database
    MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database-name?retryWrites=true&w=majority
 
-   # Server Configuration
+   # Server
    PORT=5000
    NODE_ENV=development
+   FRONTEND_URL=http://localhost:5173
 
-   # JWT Configuration
-   JWT_SECRET=your_jwt_secret_key_here_change_this_in_production
+   # Authentication
+   JWT_SECRET=your_secure_jwt_secret_key_here
 
-   # Google OAuth Configuration
-   GOOGLE_CLIENT_ID=your_google_client_id_here
-   GOOGLE_CLIENT_SECRET=your_google_client_secret_here
+   # Google OAuth
+   GOOGLE_CLIENT_ID=your_google_client_id
+   GOOGLE_CLIENT_SECRET=your_google_client_secret
 
-   # Gmail OTP Configuration
-   GMAIL_USER=your_gmail_email@gmail.com
-   GMAIL_PASSWORD=your_gmail_app_password_here
+   # Email Service
+   GMAIL_USER=your_gmail@gmail.com
+   GMAIL_PASSWORD=your_app_specific_password
 
-   # Cloudinary Configuration
+   # Cloud Storage
    CLOUDINARY_NAME=your_cloudinary_name
    CLOUDINARY_API_KEY=your_cloudinary_api_key
    CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 
-   # Frontend URL
-   FRONTEND_URL=http://localhost:5173
-
-   # File Upload Configuration
+   # File Upload
    MAX_FILE_SIZE=5242880
    ALLOWED_FILE_TYPES=jpg,jpeg,png
    ```
 
-4. MongoDB Connection Formats:
-
-   **Local MongoDB:**
-
-   ```
-   MONGODB_URI=mongodb://localhost:27017/media-vault
-   ```
-
-   **MongoDB Atlas (Cloud):**
-
-   ```
-   MONGODB_URI=mongodb+srv://username:password@cluster-name.mongodb.net/database-name?retryWrites=true&w=majority
-   ```
-
-   **Connection String Parts:**
-
-   - `mongodb+srv://` - Connection protocol for MongoDB Atlas
-   - `username:password` - Atlas username and password
-   - `cluster-name.mongodb.net` - MongoDB Atlas cluster endpoint
-   - `database-name` - Name of the database
-   - `?retryWrites=true&w=majority` - Connection options
-
-5. Start the server:
-
+4. Start the development server:
    ```bash
    npm run dev
    ```
+   Server runs on `http://localhost:5000`
 
-   Server will run on http://localhost:5000
+### Frontend Setup
+
+1. Navigate to the frontend directory:
+
+   ```bash
+   cd frontend
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+   Application runs on `http://localhost:5173`
 
 ## Project Structure
 
 ```
 backend/
 ├── config/
-│   └── database.js          # MongoDB connection configuration
+│   └── database.js              # MongoDB connection
 ├── controllers/
-│   ├── authController.js    # Authentication logic
-│   └── mediaController.js   # Media management logic
+│   ├── authController.js        # Authentication logic
+│   ├── mediaController.js       # Media CRUD operations
+│   ├── contactController.js     # Contact form handling
+│   └── userController.js        # User management
 ├── models/
-│   ├── User.js              # User schema
-│   └── Media.js             # Media schema
+│   ├── User.js                  # User schema with auth fields
+│   ├── Media.js                 # Media metadata schema
+│   └── Contact.js               # Contact message schema
 ├── routes/
-│   ├── authRoutes.js        # Auth endpoints
-│   ├── mediaRoutes.js       # Media endpoints
-│   └── userRoutes.js        # User endpoints
+│   ├── authRoutes.js            # Auth endpoints
+│   ├── mediaRoutes.js           # Media endpoints
+│   ├── contactRoutes.js         # Contact endpoints
+│   └── userRoutes.js            # User endpoints
 ├── middlewares/
-│   └── auth.js              # Authentication middleware
+│   └── auth.js                  # JWT verification middleware
 ├── utils/
-│   ├── otp.js               # OTP utilities
-│   └── upload.js            # File upload utilities
-├── server.js                # Main server file
-├── .env                     # Environment variables (not in git)
-├── .env.example             # Example environment variables
-└── package.json             # Project dependencies
+│   ├── jwt.js                   # JWT utilities
+│   ├── otp.js                   # OTP generation and validation
+│   ├── upload.js                # File upload handler
+│   ├── cloudinary.js            # Cloudinary integration
+│   ├── validators.js            # Input validation
+│   └── errorHandler.js          # Error handling utilities
+├── constants/
+│   └── appConstants.js          # Application constants
+├── server.js                    # Express app setup
+└── package.json                 # Dependencies
+
+frontend/
+├── src/
+│   ├── components/
+│   │   ├── ui/                  # Reusable UI components
+│   │   ├── FileUploadDropzone.tsx
+│   │   ├── MediaCard.tsx
+│   │   ├── MediaGallery.tsx
+│   │   ├── ShareModal.tsx
+│   │   ├── ProtectedRoute.tsx
+│   │   └── Footer.tsx
+│   ├── pages/
+│   │   ├── LoginPage.tsx
+│   │   ├── RegisterPage.tsx
+│   │   ├── DashboardPage.tsx
+│   │   ├── MediaGalleryPage.tsx
+│   │   ├── ImageUploadPage.tsx
+│   │   ├── ImageDetailPage.tsx
+│   │   ├── UserProfilePage.tsx
+│   │   ├── ContactFormPage.tsx
+│   │   ├── AdminUsersPage.tsx
+│   │   └── AdminContactPage.tsx
+│   ├── context/
+│   │   ├── AuthContext.tsx      # Auth context definition
+│   │   └── AuthContextProvider.tsx
+│   ├── services/
+│   │   ├── api.ts               # Axios instance and interceptors
+│   │   ├── authService.ts
+│   │   ├── mediaService.ts
+│   │   ├── userService.ts
+│   │   └── contactService.ts
+│   ├── hooks/
+│   │   └── useAuth.ts           # Custom auth hook
+│   ├── types/
+│   │   └── index.ts             # TypeScript type definitions
+│   ├── utils/
+│   │   └── index.ts             # Utility functions
+│   ├── App.tsx
+│   └── main.tsx
+└── package.json
 ```
 
 ## Features
 
-- User authentication with Google OAuth 2.0 and email/password
-- Email OTP verification for registration and password reset
-- Media gallery with drag & drop uploads
-- Image search and filtering by tags
-- Private and shared galleries
-- ZIP download for multiple images
-- Contact form with admin management
-- User management (admin only)
-- JWT-based protected routes
+### Authentication & Authorization
+
+- Email/password registration and login
+- Google OAuth 2.0 single sign-on
+- Email verification via OTP
+- Password reset functionality
+- JWT-based session management
+- Role-based access control (User, Admin)
+
+### Media Management
+
+- Image upload with drag-and-drop interface
+- Image metadata editing (title, description, tags)
+- Public and private media visibility
+- Share galleries with specific users
+- Search and filter by tags
+- Bulk download as ZIP archive
+
+### Admin Features
+
+- User management and soft deletion
+- Contact message viewing and management
+- System overview and statistics
+- Admin-only dashboard
+
+### User Experience
+
+- Responsive design with Tailwind CSS
+- Real-time form validation
+- Error handling and user feedback
+- Protected routes with authentication checks
 
 ## API Endpoints
 
 ### Authentication
 
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login with email/password
-- `POST /api/auth/google-login` - Login with Google OAuth
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - Email/password login
+- `POST /api/auth/google-login` - Google OAuth login
 - `POST /api/auth/send-otp` - Send OTP to email
-- `POST /api/auth/verify-otp` - Verify OTP
-- `POST /api/auth/forgot-password` - Initiate password reset
+- `POST /api/auth/verify-otp` - Verify OTP token
+- `POST /api/auth/forgot-password` - Request password reset
 - `POST /api/auth/reset-password` - Reset password with OTP
 
-### Media
+### Media Management
 
-- `GET /api/media/my-media` - Get user's media
-- `GET /api/media/public` - Get public media
+- `GET /api/media/my-media` - Retrieve user's media
+- `GET /api/media/public` - Get publicly shared media
 - `POST /api/media/upload` - Upload new media
 - `GET /api/media/:id` - Get media details
-- `PUT /api/media/:id` - Update media
+- `PUT /api/media/:id` - Update media metadata
 - `DELETE /api/media/:id` - Delete media
-- `POST /api/media/download-zip` - Download multiple as ZIP
+- `POST /api/media/download-zip` - Download multiple files as ZIP
 
-### Contact
+### Contact Form
 
 - `POST /api/contact` - Submit contact message
 - `GET /api/contact/mymessages` - Get user's messages
 - `DELETE /api/contact/:id` - Delete own message
 
-### Users (Admin)
+### User Management (Admin)
 
-- `GET /api/admin/users` - Get all users
-- `PUT /api/admin/users/:id` - Update user
-- `DELETE /api/admin/users/:id` - Soft delete user
+- `GET /api/users` - List all users
+- `GET /api/users/:id` - Get user details
+- `PUT /api/users/:id` - Update user information
+- `DELETE /api/users/:id` - Soft delete user account
 
-## Testing the Server
+## Environment Configuration
 
-Once the server is running, test the health check endpoint:
+### MongoDB Connection
+
+- **Local:** `mongodb://localhost:27017/media-vault`
+- **Atlas Cloud:** `mongodb+srv://username:password@cluster.mongodb.net/database-name?retryWrites=true&w=majority`
+
+### File Upload Limits
+
+- Maximum file size: 5MB
+- Allowed formats: JPG, JPEG, PNG
+
+## Development
+
+### Running Tests
+
+```bash
+# Backend
+cd backend
+npm run dev
+
+# Frontend (in separate terminal)
+cd frontend
+npm run dev
+```
+
+### Health Check
 
 ```bash
 curl http://localhost:5000/api/health
@@ -177,15 +294,28 @@ Expected response:
 
 ```json
 {
+  "success": true,
   "message": "Server is running",
-  "timestamp": "2024-01-01T00:00:00.000Z"
+  "timestamp": "2024-01-05T10:30:00.000Z",
+  "environment": "development"
 }
+```
+
+## Building for Production
+
+### Backend
+
+```bash
+npm run start
+```
+
+### Frontend
+
+```bash
+npm run build
+npm run preview
 ```
 
 ## Contributors
 
 - Pubudu Wijesundara
-
-## License
-
-ISC
