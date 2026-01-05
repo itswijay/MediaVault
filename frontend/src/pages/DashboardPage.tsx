@@ -63,7 +63,7 @@ export const DashboardPage = () => {
   const getIsOwnMedia = (media: Media): boolean => {
     const mediaUserId =
       typeof media.userId === 'object'
-        ? (media.userId as Record<string, any>)._id
+        ? (media.userId as { _id: string })._id
         : media.userId
     return mediaUserId === user?.id
   }
@@ -103,9 +103,9 @@ export const DashboardPage = () => {
     )
     .slice(0, 5)
 
-  // Get shared media
+  // Get shared media (media shared BY others TO this user, not their own)
   const sharedMedia = mediaList
-    .filter((m) => m.sharedWith && m.sharedWith.length > 0)
+    .filter((m) => !getIsOwnMedia(m) && m.sharedWith && m.sharedWith.length > 0)
     .slice(0, 3)
 
   const handleLogout = () => {
@@ -317,7 +317,7 @@ export const DashboardPage = () => {
                 {recentUploads.map((media) => {
                   const mediaUserId =
                     typeof media.userId === 'object'
-                      ? (media.userId as Record<string, any>)._id
+                      ? (media.userId as { _id: string })._id
                       : media.userId
                   const isOwnMedia = mediaUserId === user?.id
 
