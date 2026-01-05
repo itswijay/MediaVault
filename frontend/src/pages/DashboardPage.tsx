@@ -20,11 +20,11 @@ import {
   HardDrive,
   FileText,
   Lock,
-  Share2,
   Upload,
   Loader2,
   ChevronRight,
   Camera,
+  Mail,
 } from 'lucide-react'
 import logoImg from '../assets/mediavault.png'
 
@@ -277,11 +277,11 @@ export const DashboardPage = () => {
                   Edit Profile
                 </Button>
                 <Button
-                  onClick={() => navigate('/gallery')}
-                  className="h-11 bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold rounded-lg flex items-center justify-center gap-2"
+                  onClick={() => navigate('/contact')}
+                  className="h-11 bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold rounded-lg flex items-center justify-center gap-2"
                 >
-                  <Share2 className="w-4 h-4" />
-                  Browse All
+                  <Mail className="w-4 h-4" />
+                  Contact Us
                 </Button>
               </div>
             </CardContent>
