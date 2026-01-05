@@ -33,6 +33,18 @@ const contactSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    readBy: [
+      {
+        adminId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User',
+        },
+        readAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
   {
     timestamps: true,

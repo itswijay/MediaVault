@@ -81,6 +81,10 @@ export interface Contact {
   message: string
   userId?: string
   isRead: boolean
+  readBy: Array<{
+    adminId: string
+    readAt: string
+  }>
   createdAt: string
 }
 

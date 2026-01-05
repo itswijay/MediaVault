@@ -450,7 +450,7 @@ export const ContactFormPage = () => {
                               disabled={editingMessage?.id === msg.id}
                               size="sm"
                               variant="ghost"
-                              className="text-slate-400 hover:text-cyan-400"
+                              className="text-slate-100 hover:text-cyan-400"
                             >
                               <Edit2 className="w-4 h-4" />
                             </Button>
@@ -459,7 +459,7 @@ export const ContactFormPage = () => {
                               disabled={isDeletingId === msg.id}
                               size="sm"
                               variant="ghost"
-                              className="text-slate-400 hover:text-red-400"
+                              className="text-slate-100 hover:text-red-400"
                             >
                               {isDeletingId === msg.id ? (
                                 <Loader2 className="w-4 h-4 animate-spin" />

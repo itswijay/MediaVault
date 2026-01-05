@@ -402,7 +402,7 @@ export const MediaGallery: React.FC<MediaGalleryProps> = ({
             {paginatedMedia.map((media) => {
               const mediaUserId =
                 typeof media.userId === 'object'
-                  ? (media.userId as Record<string, any>)._id
+                  ? (media.userId as { _id?: string })._id
                   : media.userId
               const isOwnMedia = mediaUserId === user?.id
 

@@ -107,6 +107,15 @@ export const AdminContactPage = () => {
   // Check if user is admin
   const isAdmin = isAuthenticated && currentUser?.role === 'admin'
 
+  // Check if current admin has read this message
+  const isMessageReadByCurrentAdmin = (
+    message: Contact,
+    adminId?: string
+  ): boolean => {
+    if (!adminId) return false
+    return message.readBy?.some((read) => read.adminId === adminId) ?? false
+  }
+
   // Filter messages by search term and read status (client-side)
   const filteredMessages = messages.filter((message) => {
     const searchLower = searchTerm.toLowerCase()
@@ -115,10 +124,14 @@ export const AdminContactPage = () => {
       message.email.toLowerCase().includes(searchLower) ||
       message.message.toLowerCase().includes(searchLower)
 
+    const isReadByCurrentAdmin = isMessageReadByCurrentAdmin(
+      message,
+      currentUser?.id
+    )
     const matchesReadFilter =
       readFilter === '' ||
-      (readFilter === 'read' && message.isRead) ||
-      (readFilter === 'unread' && !message.isRead)
+      (readFilter === 'read' && isReadByCurrentAdmin) ||
+      (readFilter === 'unread' && !isReadByCurrentAdmin)
 
     return matchesSearch && matchesReadFilter
   })
@@ -129,12 +142,13 @@ export const AdminContactPage = () => {
     try {
       const updatedMessage = await markMessageAsRead(messageId)
       setMessages((prev) =>
-        prev.map((m) =>
-          m.id === messageId ? { ...m, isRead: updatedMessage.isRead } : m
-        )
+        prev.map((m) => (m.id === messageId ? updatedMessage : m))
       )
       if (viewingMessage?.id === messageId) {
-        setViewingMessage({ ...viewingMessage, isRead: updatedMessage.isRead })
+        setViewingMessage({
+          ...viewingMessage,
+          isRead: isMessageReadByCurrentAdmin(updatedMessage, currentUser?.id),
+        })
       }
       setSuccessMessage('Message marked as read')
       setTimeout(() => setSuccessMessage(null), 3000)
@@ -208,7 +222,7 @@ export const AdminContactPage = () => {
             variant="ghost"
             size="sm"
             onClick={() => navigate('/dashboard')}
-            className="text-slate-400 hover:text-white"
+            className="text-slate-100 hover:text-white"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Dashboard
@@ -369,17 +383,28 @@ export const AdminContactPage = () => {
                           <td className="px-4 py-3">
                             <span
                               className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${
-                                message.isRead
+                                isMessageReadByCurrentAdmin(
+                                  message,
+                                  currentUser?.id
+                                )
                                   ? 'bg-green-500/20 text-green-300'
                                   : 'bg-yellow-500/20 text-yellow-300'
                               }`}
                             >
-                              {message.isRead ? (
+                              {isMessageReadByCurrentAdmin(
+                                message,
+                                currentUser?.id
+                              ) ? (
                                 <CheckCircle2 className="w-3 h-3" />
                               ) : (
                                 <Clock className="w-3 h-3" />
                               )}
-                              {message.isRead ? 'Read' : 'Unread'}
+                              {isMessageReadByCurrentAdmin(
+                                message,
+                                currentUser?.id
+                              )
+                                ? 'Read'
+                                : 'Unread'}
                             </span>
                           </td>
                           <td className="px-4 py-3">
@@ -391,17 +416,23 @@ export const AdminContactPage = () => {
                                     name: message.name,
                                     email: message.email,
                                     message: message.message,
-                                    isRead: message.isRead,
+                                    isRead: isMessageReadByCurrentAdmin(
+                                      message,
+                                      currentUser?.id
+                                    ),
                                   })
                                 }
                                 size="sm"
                                 variant="ghost"
-                                className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10"
+                                className="text-cyan-100 hover:text-cyan-300 hover:bg-cyan-500/10"
                                 title="View full message"
                               >
                                 <Eye className="w-4 h-4" />
                               </Button>
-                              {!message.isRead && (
+                              {!isMessageReadByCurrentAdmin(
+                                message,
+                                currentUser?.id
+                              ) && (
                                 <Button
                                   onClick={() => handleMarkAsRead(message.id)}
                                   disabled={isMarkingRead === message.id}
@@ -493,7 +524,7 @@ export const AdminContactPage = () => {
                   variant="ghost"
                   size="sm"
                   onClick={() => setViewingMessage(null)}
-                  className="text-slate-400 hover:text-white"
+                  className="text-slate-100 hover:text-white"
                 >
                   ✕
                 </Button>
@@ -522,7 +553,7 @@ export const AdminContactPage = () => {
                   ) : (
                     <Clock className="w-3 h-3" />
                   )}
-                  {viewingMessage.isRead ? 'Read' : 'Unread'}
+                  {viewingMessage.isRead ? 'Read' : 'Unread'} (Your view)
                 </span>
               </div>
 

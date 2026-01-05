@@ -313,14 +313,7 @@ const adminDeleteMessage = async (req, res) => {
 const markAsRead = async (req, res) => {
   try {
     const { id } = req.params
-    const { isRead } = req.body
-
-    if (isRead === undefined) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please provide isRead status.',
-      })
-    }
+    const adminId = req.user.userId || req.user.id
 
     const contact = await Contact.findById(id)
 
@@ -331,13 +324,25 @@ const markAsRead = async (req, res) => {
       })
     }
 
-    contact.isRead = isRead
-    await contact.save()
+    // Check if admin already marked this message as read
+    const alreadyRead = contact.readBy.some(
+      (read) => read.adminId.toString() === adminId
+    )
+
+    if (!alreadyRead) {
+      // Add admin to readBy array
+      contact.readBy.push({
+        adminId,
+        readAt: new Date(),
+      })
+      await contact.save()
+    }
+
     await contact.populate('userId')
 
     return res.status(200).json({
       success: true,
-      message: `Message marked as ${isRead ? 'read' : 'unread'}.`,
+      message: 'Message marked as read.',
       data: { contact },
     })
   } catch (error) {

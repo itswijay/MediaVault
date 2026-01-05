@@ -7,7 +7,12 @@ export const submitContactMessage = async (
 ): Promise<Contact> => {
   try {
     const response = await api.post('/contact', payload)
-    return response.data.data.contact
+    const contact = response.data.data.contact
+    // Transform _id to id for consistency
+    return {
+      ...contact,
+      id: (contact as { _id?: string } & typeof contact)._id || contact.id,
+    }
   } catch (error) {
     console.error('Error submitting contact message:', error)
     throw error
@@ -31,7 +36,19 @@ export const getUserMessages = async (
     const response = await api.get('/contact/mymessages', {
       params: { page, limit },
     })
-    return response.data.data
+
+    // Transform _id to id for consistency
+    const transformedMessages = response.data.data.messages.map(
+      (message: Contact) => ({
+        ...message,
+        id: (message as { _id?: string } & typeof message)._id || message.id,
+      })
+    )
+
+    return {
+      messages: transformedMessages,
+      pagination: response.data.data.pagination,
+    }
   } catch (error) {
     console.error('Error fetching user messages:', error)
     throw error
@@ -45,7 +62,13 @@ export const updateContactMessage = async (
 ): Promise<Contact> => {
   try {
     const response = await api.put(`/contact/${id}`, { message })
-    return response.data.data.contact
+    const contact = response.data.data.contact
+
+    // Transform _id to id for consistency
+    return {
+      ...contact,
+      id: (contact as { _id?: string } & typeof contact)._id || contact.id,
+    }
   } catch (error) {
     console.error('Error updating contact message:', error)
     throw error
@@ -76,10 +99,22 @@ export const getAllMessages = async (
   }
 }> => {
   try {
-    const response = await api.get('/admin/contact', {
+    const response = await api.get('/contact/admin', {
       params: { page, limit },
     })
-    return response.data.data
+
+    // Transform _id to id for consistency
+    const transformedMessages = response.data.data.messages.map(
+      (message: Contact) => ({
+        ...message,
+        id: (message as { _id?: string } & typeof message)._id || message.id,
+      })
+    )
+
+    return {
+      messages: transformedMessages,
+      pagination: response.data.data.pagination,
+    }
   } catch (error) {
     console.error('Error fetching all messages:', error)
     throw error
@@ -89,7 +124,7 @@ export const getAllMessages = async (
 // Delete a contact message (admin)
 export const deleteMessageAdmin = async (id: string): Promise<void> => {
   try {
-    await api.delete(`/admin/contact/${id}`)
+    await api.delete(`/contact/admin/${id}`)
   } catch (error) {
     console.error('Error deleting message:', error)
     throw error
@@ -99,8 +134,14 @@ export const deleteMessageAdmin = async (id: string): Promise<void> => {
 // Mark message as read (admin)
 export const markMessageAsRead = async (id: string): Promise<Contact> => {
   try {
-    const response = await api.put(`/contact/${id}/read`)
-    return response.data.data.contact
+    const response = await api.put(`/contact/${id}/read`, {})
+    const contact = response.data.data.contact
+
+    // Transform _id to id for consistency
+    return {
+      ...contact,
+      id: (contact as { _id?: string } & typeof contact)._id || contact.id,
+    }
   } catch (error) {
     console.error('Error marking message as read:', error)
     throw error
