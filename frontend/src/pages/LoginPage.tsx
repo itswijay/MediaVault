@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import axios from 'axios'
+import { GoogleLogin, type CredentialResponse } from '@react-oauth/google'
 import { useAuth } from '../hooks/useAuth'
 import api from '../services/api'
 import { Button } from '../components/ui/button'
@@ -28,7 +29,6 @@ export const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false)
 
   // Email validation regex
   const isValidEmail = (email: string) => {
@@ -101,32 +101,69 @@ export const LoginPage = () => {
   }
 
   // Handle Google OAuth login
-  const handleGoogleLogin = () => {
-    setIsGoogleLoading(true)
+  const handleGoogleSuccess = (credentialResponse: CredentialResponse) => {
     setError(null)
+    setIsLoading(true)
 
-    try {
-      // Google OAuth flow - typically opens a popup or redirects
-      // You'll need to integrate Google OAuth library (e.g., @react-oauth/google)
-      // For now, this is a placeholder
-      const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
-      if (!clientId) {
-        setError('Google OAuth is not configured')
-        setIsGoogleLoading(false)
-        return
+    const performLogin = async () => {
+      try {
+        const token = credentialResponse.credential
+        if (!token) {
+          setError('Failed to get credential from Google')
+          return
+        }
+
+        // Decode JWT token to get user info (without verification on client)
+        const base64Url = token.split('.')[1]
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split('')
+            .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join('')
+        )
+        const decodedToken = JSON.parse(jsonPayload)
+
+        // Send token to backend for verification and login
+        const response = await api.post<AuthResponse>('/auth/google-login', {
+          googleId: decodedToken.sub,
+          email: decodedToken.email,
+          name: decodedToken.name,
+          profileImage: decodedToken.picture,
+          token: token, // Send the token for verification
+        })
+
+        if (response.data.success) {
+          const { user, token: accessToken, refreshToken } = response.data.data
+          login(user, accessToken, refreshToken)
+
+          navigate('/dashboard')
+        }
+      } catch (err) {
+        let errorMessage = 'Google login failed. Please try again.'
+
+        if (axios.isAxiosError(err)) {
+          if (err.response?.data?.message) {
+            errorMessage = err.response.data.message
+          } else if (err.message) {
+            errorMessage = err.message
+          }
+        } else if (err instanceof Error) {
+          errorMessage = err.message
+        }
+
+        setError(errorMessage)
+        console.error('Google login error:', err)
+      } finally {
+        setIsLoading(false)
       }
-
-      // This would typically use the Google auth library
-      // window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?...`
-
-      // Placeholder for actual implementation
-      console.log('Google login initiated')
-    } catch (err) {
-      setError('Google login failed. Please try again.')
-      console.error('Google login error:', err)
-    } finally {
-      setIsGoogleLoading(false)
     }
+
+    performLogin()
+  }
+
+  const handleGoogleError = () => {
+    setError('Google login failed. Please try again.')
   }
 
   return (
@@ -266,42 +303,13 @@ export const LoginPage = () => {
               </div>
 
               {/* Google Login Button */}
-              <Button
-                type="button"
-                onClick={handleGoogleLogin}
-                disabled={isGoogleLoading || isLoading}
-                variant="outline"
-                className="w-full border-slate-600 text-slate-300 hover:bg-slate-700/50 h-10"
-              >
-                {isGoogleLoading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Connecting...
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
-                      <path
-                        fill="currentColor"
-                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                      />
-                      <path
-                        fill="currentColor"
-                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                      />
-                      <path
-                        fill="currentColor"
-                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                      />
-                      <path
-                        fill="currentColor"
-                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                      />
-                    </svg>
-                    Google
-                  </>
-                )}
-              </Button>
+              <div className="flex justify-center">
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                  width="320"
+                />
+              </div>
 
               {/* Sign Up Link */}
               <p className="text-center text-sm text-slate-400">

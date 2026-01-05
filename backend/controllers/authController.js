@@ -1,4 +1,5 @@
 import User from '../models/User.js'
+import { OAuth2Client } from 'google-auth-library'
 import {
   generateAccessToken,
   generateTokens,
@@ -6,6 +7,9 @@ import {
   decodeToken,
 } from '../utils/jwt.js'
 import { sendOTP, verifyOTP, isOTPVerified, clearOTP } from '../utils/otp.js'
+
+// Initialize Google OAuth2 client
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
 // Helper function to maintain backward compatibility
 const generateToken = (payload) => {
@@ -310,19 +314,53 @@ const login = async (req, res) => {
  */
 const googleLogin = async (req, res) => {
   try {
-    const { googleId, name, email, profileImage } = req.body
+    const { token, googleId, name, email, profileImage } = req.body
 
     // Validation
-    if (!googleId || !email) {
+    if (!email) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide googleId and email from Google OAuth.',
+        message: 'Please provide email from Google OAuth.',
+      })
+    }
+
+    let verifiedGoogleId = googleId
+
+    // Verify Google token if provided
+    if (token) {
+      try {
+        const ticket = await googleClient.verifyIdToken({
+          idToken: token,
+          audience: process.env.GOOGLE_CLIENT_ID,
+        })
+
+        const payload = ticket.getPayload()
+        verifiedGoogleId = payload.sub
+
+        // Validate that email matches
+        if (payload.email !== email) {
+          return res.status(400).json({
+            success: false,
+            message: 'Email mismatch with Google account.',
+          })
+        }
+      } catch (verifyError) {
+        console.error('Google token verification failed:', verifyError)
+        return res.status(401).json({
+          success: false,
+          message: 'Invalid Google token. Please try again.',
+        })
+      }
+    } else if (!googleId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide either token or googleId.',
       })
     }
 
     // Find user by googleId or email
     let user = await User.findOne({
-      $or: [{ googleId }, { email }],
+      $or: [{ googleId: verifiedGoogleId }, { email }],
     })
 
     // If user doesn't exist, create new user
@@ -330,7 +368,7 @@ const googleLogin = async (req, res) => {
       user = new User({
         name: name || email.split('@')[0],
         email,
-        googleId,
+        googleId: verifiedGoogleId,
         profileImage: profileImage || null,
         isEmailVerified: true, // Google users are pre-verified
       })
@@ -339,7 +377,7 @@ const googleLogin = async (req, res) => {
     } else {
       // If user exists but doesn't have googleId, add it
       if (!user.googleId) {
-        user.googleId = googleId
+        user.googleId = verifiedGoogleId
         await user.save()
       }
     }
