@@ -17,6 +17,7 @@ import { ImageDetailPage } from './pages/ImageDetailPage'
 import { UserProfilePage } from './pages/UserProfilePage'
 import { VerifyEmailPage } from './pages/VerifyEmailPage'
 import { ContactFormPage } from './pages/ContactFormPage'
+import { AdminUsersPage } from './pages/AdminUsersPage'
 
 function App() {
   return (
@@ -81,7 +82,7 @@ function App() {
           <Route path="/contact" element={<ContactFormPage />} />
 
           {/* Admin Routes */}
-          {/* <Route
+          <Route
             path="/admin/users"
             element={
               <ProtectedRoute adminOnly>
@@ -89,7 +90,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
+          {/* <Route
             path="/admin/contact"
             element={
               <ProtectedRoute adminOnly>

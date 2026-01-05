@@ -25,6 +25,7 @@ import {
   ChevronRight,
   Camera,
   Mail,
+  Shield,
 } from 'lucide-react'
 import logoImg from '../assets/mediavault.png'
 
@@ -286,9 +287,40 @@ export const DashboardPage = () => {
               </div>
             </CardContent>
           </Card>
-        </div>
 
-        {/* Recent Uploads Section */}
+          {/* Admin Panel (only for admins) */}
+          {user.role === 'admin' && (
+            <Card className="border-slate-700 bg-slate-800/50 backdrop-blur">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Shield className="w-5 h-5" />
+                  Admin Panel
+                </CardTitle>
+                <CardDescription className="text-slate-400">
+                  Manage system and users
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <Button
+                    onClick={() => navigate('/admin/users')}
+                    className="h-11 bg-linear-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-lg flex items-center justify-center gap-2"
+                  >
+                    <User className="w-4 h-4" />
+                    User Management
+                  </Button>
+                  <Button
+                    disabled
+                    className="h-11 bg-linear-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold rounded-lg flex items-center justify-center gap-2 opacity-50"
+                  >
+                    <Mail className="w-4 h-4" />
+                    Contact Messages
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
         <Card className="border-slate-700 bg-slate-800/50 backdrop-blur">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
