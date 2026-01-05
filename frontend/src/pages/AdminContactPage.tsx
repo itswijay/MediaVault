@@ -24,7 +24,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Trash2,
-  ArrowLeft,
   CheckCircle2,
   XCircle,
   Mail,
@@ -215,7 +214,7 @@ export const AdminContactPage = () => {
       <nav className="bg-slate-800/50 border-b border-slate-700 backdrop-blur sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src={logoImg} alt="MediaVault" className="h-10 w-10" />
+            <img src={logoImg} alt="MediaVault" className="h-8 w-8 md:h-10 md:w-10" />
             <h1 className="text-xl font-bold text-white">MediaVault</h1>
           </div>
           <Button
@@ -224,7 +223,6 @@ export const AdminContactPage = () => {
             onClick={() => navigate('/dashboard')}
             className="text-slate-100 hover:text-white"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
             Dashboard
           </Button>
         </div>

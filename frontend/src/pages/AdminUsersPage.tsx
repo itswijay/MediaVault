@@ -20,7 +20,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Edit2,
-  ArrowLeft,
   CheckCircle2,
   XCircle,
   Shield,
@@ -179,7 +178,11 @@ export const AdminUsersPage = () => {
       <nav className="bg-slate-800/50 border-b border-slate-700 backdrop-blur sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src={logoImg} alt="MediaVault" className="h-10 w-10" />
+            <img
+              src={logoImg}
+              alt="MediaVault"
+              className="h-8 w-8 md:h-10 md:w-10"
+            />
             <h1 className="text-xl font-bold text-white">MediaVault</h1>
           </div>
           <Button
@@ -188,7 +191,6 @@ export const AdminUsersPage = () => {
             onClick={() => navigate('/dashboard')}
             className="text-slate-100 hover:text-white"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
             Dashboard
           </Button>
         </div>
@@ -199,10 +201,10 @@ export const AdminUsersPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           {/* Page Header */}
           <div className="mb-8">
-            <h2 className="text-4xl font-bold text-white mb-2">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">
               User Management
             </h2>
-            <p className="text-slate-400">
+            <p className="text-sm sm:text-base text-slate-400">
               Manage users, roles, and account status
             </p>
           </div>
@@ -246,10 +248,13 @@ export const AdminUsersPage = () => {
               </div>
 
               {/* Filters */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-2 gap-2 sm:gap-4">
                 <div>
-                  <Label htmlFor="role-filter" className="text-slate-200">
-                    Filter by Role
+                  <Label
+                    htmlFor="role-filter"
+                    className="text-slate-200 text-xs sm:text-sm"
+                  >
+                    <span className="hidden sm:inline">Filter by </span>Role
                   </Label>
                   <select
                     id="role-filter"
@@ -257,7 +262,7 @@ export const AdminUsersPage = () => {
                     onChange={(e) =>
                       setRoleFilter(e.target.value as '' | 'user' | 'admin')
                     }
-                    className="mt-2 w-full px-3 py-2 bg-slate-700/50 border border-slate-600 rounded-md text-white focus:border-cyan-500 focus:outline-none"
+                    className="mt-1 sm:mt-2 w-full px-2 sm:px-3 py-1 sm:py-2 bg-slate-700/50 border border-slate-600 rounded-md text-white text-sm focus:border-cyan-500 focus:outline-none"
                   >
                     <option value="">All Roles</option>
                     <option value="user">User</option>
@@ -266,8 +271,11 @@ export const AdminUsersPage = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="status-filter" className="text-slate-200">
-                    Filter by Status
+                  <Label
+                    htmlFor="status-filter"
+                    className="text-slate-200 text-xs sm:text-sm"
+                  >
+                    <span className="hidden sm:inline">Filter by </span>Status
                   </Label>
                   <select
                     id="status-filter"
@@ -277,7 +285,7 @@ export const AdminUsersPage = () => {
                         e.target.value as '' | 'active' | 'inactive'
                       )
                     }
-                    className="mt-2 w-full px-3 py-2 bg-slate-700/50 border border-slate-600 rounded-md text-white focus:border-cyan-500 focus:outline-none"
+                    className="mt-1 sm:mt-2 w-full px-2 sm:px-3 py-1 sm:py-2 bg-slate-700/50 border border-slate-600 rounded-md text-white text-sm focus:border-cyan-500 focus:outline-none"
                   >
                     <option value="">All Status</option>
                     <option value="active">Active</option>
@@ -289,12 +297,14 @@ export const AdminUsersPage = () => {
           </Card>
 
           {/* Users Table Card */}
-          <Card className="border-slate-700 bg-slate-800/50">
-            <CardHeader>
-              <div className="flex items-center justify-between">
+          <Card className="border-slate-700 bg-slate-800/50 overflow-hidden">
+            <CardHeader className="pb-3 sm:pb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <CardTitle className="text-white">Users</CardTitle>
-                  <CardDescription className="text-slate-400">
+                  <CardTitle className="text-lg sm:text-xl text-white">
+                    Users
+                  </CardTitle>
+                  <CardDescription className="text-xs sm:text-sm text-slate-400">
                     Total: {totalItems} users
                   </CardDescription>
                 </div>
@@ -315,26 +325,26 @@ export const AdminUsersPage = () => {
                   </p>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
+                <div className="overflow-x-auto -mx-6 sm:mx-0">
+                  <table className="w-full min-w-96 sm:min-w-full">
                     <thead>
                       <tr className="border-b border-slate-700">
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-slate-300">
+                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-slate-300">
                           Name
                         </th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-slate-300">
+                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-slate-300 hidden sm:table-cell">
                           Email
                         </th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-slate-300">
+                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-slate-300">
                           Role
                         </th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-slate-300">
+                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-slate-300">
                           Status
                         </th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-slate-300">
+                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-slate-300 hidden md:table-cell">
                           Joined
                         </th>
-                        <th className="px-4 py-3 text-left text-sm font-semibold text-slate-300">
+                        <th className="px-3 sm:px-4 py-2 sm:py-3 text-left text-xs sm:text-sm font-semibold text-slate-300">
                           Actions
                         </th>
                       </tr>
@@ -345,9 +355,9 @@ export const AdminUsersPage = () => {
                         return (
                           <tr
                             key={u.id}
-                            className="border-b border-slate-700 hover:bg-slate-700/30 transition"
+                            className="border-b border-slate-700 hover:bg-slate-700/30 transition text-xs sm:text-sm"
                           >
-                            <td className="px-4 py-3 text-slate-200">
+                            <td className="px-3 sm:px-4 py-2 sm:py-3 text-slate-200">
                               {editingUser?.id === u.id && editingUser ? (
                                 <input
                                   type="text"
@@ -358,13 +368,15 @@ export const AdminUsersPage = () => {
                                       name: e.target.value,
                                     })
                                   }
-                                  className="w-full px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-white"
+                                  className="w-full px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-white text-xs sm:text-sm"
                                 />
                               ) : (
-                                u.name || 'N/A'
+                                <div className="truncate" title={u.name}>
+                                  {u.name || 'N/A'}
+                                </div>
                               )}
                             </td>
-                            <td className="px-4 py-3 text-slate-200">
+                            <td className="px-3 sm:px-4 py-2 sm:py-3 text-slate-200 hidden sm:table-cell">
                               {editingUser?.id === u.id && editingUser ? (
                                 <input
                                   type="email"
@@ -375,16 +387,21 @@ export const AdminUsersPage = () => {
                                       email: e.target.value,
                                     })
                                   }
-                                  className="w-full px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-white"
+                                  className="w-full px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-white text-xs sm:text-sm"
                                 />
                               ) : (
-                                <div className="flex items-center gap-1">
-                                  <Mail className="w-4 h-4 text-slate-500" />
-                                  {u.email || 'N/A'}
+                                <div
+                                  className="flex items-center gap-1 truncate"
+                                  title={u.email}
+                                >
+                                  <Mail className="w-3 h-3 sm:w-4 sm:h-4 text-slate-500 shrink-0" />
+                                  <span className="truncate">
+                                    {u.email || 'N/A'}
+                                  </span>
                                 </div>
                               )}
                             </td>
-                            <td className="px-4 py-3">
+                            <td className="px-3 sm:px-4 py-2 sm:py-3">
                               {editingUser?.id === u.id && editingUser ? (
                                 <select
                                   value={editingUser.role || 'user'}
@@ -394,14 +411,14 @@ export const AdminUsersPage = () => {
                                       role: e.target.value as 'user' | 'admin',
                                     })
                                   }
-                                  className="px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-white"
+                                  className="px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-white text-xs sm:text-sm"
                                 >
                                   <option value="user">User</option>
                                   <option value="admin">Admin</option>
                                 </select>
                               ) : (
                                 <span
-                                  className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${
+                                  className={`inline-flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full text-xs font-semibold ${
                                     u.role === 'admin'
                                       ? 'bg-purple-500/20 text-purple-300'
                                       : 'bg-blue-500/20 text-blue-300'
@@ -414,9 +431,9 @@ export const AdminUsersPage = () => {
                                 </span>
                               )}
                             </td>
-                            <td className="px-4 py-3">
+                            <td className="px-3 sm:px-4 py-2 sm:py-3">
                               {editingUser?.id === u.id && editingUser ? (
-                                <label className="flex items-center gap-2 text-slate-200">
+                                <label className="flex items-center gap-2 text-slate-200 text-xs sm:text-sm">
                                   <input
                                     type="checkbox"
                                     checked={editingUser.isActive || false}
@@ -428,11 +445,13 @@ export const AdminUsersPage = () => {
                                     }
                                     className="rounded"
                                   />
-                                  Active
+                                  <span className="hidden sm:inline">
+                                    Active
+                                  </span>
                                 </label>
                               ) : (
                                 <span
-                                  className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${
+                                  className={`inline-flex items-center gap-1 px-2 sm:px-3 py-1 rounded-full text-xs font-semibold ${
                                     u.isActive
                                       ? 'bg-green-500/20 text-green-300'
                                       : 'bg-red-500/20 text-red-300'
@@ -447,31 +466,37 @@ export const AdminUsersPage = () => {
                                 </span>
                               )}
                             </td>
-                            <td className="px-4 py-3 text-slate-400 text-sm">
+                            <td className="px-3 sm:px-4 py-2 sm:py-3 text-slate-400 text-xs sm:text-sm hidden md:table-cell">
                               {u.createdAt ? formatDate(u.createdAt) : 'N/A'}
                             </td>
-                            <td className="px-4 py-3">
+                            <td className="px-3 sm:px-4 py-2 sm:py-3">
                               {editingUser?.id === u.id && editingUser ? (
-                                <div className="flex gap-2">
+                                <div className="flex gap-1 sm:gap-2">
                                   <Button
                                     onClick={handleSaveEdit}
                                     disabled={isSavingEdit}
                                     size="sm"
-                                    className="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold"
+                                    className="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold text-xs sm:text-sm"
                                   >
                                     {isSavingEdit ? (
-                                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                                      <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin mr-1 sm:mr-2" />
                                     ) : null}
-                                    Save
+                                    <span className="hidden sm:inline">
+                                      Save
+                                    </span>
+                                    <span className="sm:hidden">✓</span>
                                   </Button>
                                   <Button
                                     onClick={() => setEditingUser(null)}
                                     disabled={isSavingEdit}
                                     size="sm"
                                     variant="outline"
-                                    className="border-slate-600 text-slate-200 hover:bg-slate-800 font-semibold"
+                                    className="border-slate-600 text-slate-200 hover:bg-slate-800 font-semibold text-xs sm:text-sm"
                                   >
-                                    Cancel
+                                    <span className="hidden sm:inline">
+                                      Cancel
+                                    </span>
+                                    <span className="sm:hidden">✕</span>
                                   </Button>
                                 </div>
                               ) : (
@@ -487,10 +512,11 @@ export const AdminUsersPage = () => {
                                     })
                                   }
                                   size="sm"
-                                  className="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold"
+                                  className="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold text-xs sm:text-sm"
                                 >
-                                  <Edit2 className="w-4 h-4 mr-2" />
-                                  Edit
+                                  <Edit2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                                  <span className="hidden sm:inline">Edit</span>
+                                  <span className="sm:hidden">Edit</span>
                                 </Button>
                               )}
                             </td>
@@ -504,20 +530,20 @@ export const AdminUsersPage = () => {
 
               {/* Pagination */}
               {!isLoading && filteredUsers.length > 0 && totalPages > 1 && (
-                <div className="flex items-center justify-between mt-8 pt-6 border-t border-slate-700">
-                  <p className="text-sm text-slate-400">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-slate-700">
+                  <p className="text-xs sm:text-sm text-slate-400">
                     Page {currentPage} of {totalPages}
                   </p>
-                  <div className="flex gap-2">
+                  <div className="flex gap-1 sm:gap-2">
                     <Button
                       onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                       disabled={currentPage === 1 || isLoading}
                       variant="outline"
                       size="sm"
-                      className="border-slate-600 text-slate-200 hover:bg-slate-800"
+                      className="border-slate-600 text-slate-200 hover:bg-slate-800 text-xs sm:text-sm px-2 sm:px-3"
                     >
-                      <ChevronLeft className="w-4 h-4" />
-                      Previous
+                      <ChevronLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <span className="hidden sm:inline ml-1">Previous</span>
                     </Button>
                     <Button
                       onClick={() =>
@@ -526,10 +552,10 @@ export const AdminUsersPage = () => {
                       disabled={currentPage === totalPages || isLoading}
                       variant="outline"
                       size="sm"
-                      className="border-slate-600 text-slate-200 hover:bg-slate-800"
+                      className="border-slate-600 text-slate-200 hover:bg-slate-800 text-xs sm:text-sm px-2 sm:px-3"
                     >
-                      Next
-                      <ChevronRight className="w-4 h-4" />
+                      <span className="hidden sm:inline mr-1">Next</span>
+                      <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
                     </Button>
                   </div>
                 </div>

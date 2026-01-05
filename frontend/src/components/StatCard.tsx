@@ -39,7 +39,7 @@ export const StatCard: React.FC<StatCardProps> = ({
             {title}
           </CardTitle>
           <div
-            className={`inline-flex items-center justify-center w-10 h-10 rounded-lg bg-linear-to-br ${colorClasses[colorClass]}`}
+            className={`inline-flex items-center justify-center w-10 h-10 rounded-lg bg-linear-to-br text-slate-100 ${colorClasses[colorClass]}`}
           >
             {icon}
           </div>

@@ -7,12 +7,12 @@ export const Footer = () => {
     <footer className="border-t border-slate-700 bg-slate-900/50 mt-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-center sm:text-left text-slate-500 text-sm">
+          <p className="text-center sm:text-left text-slate-500 text-sm order-2 sm:order-1">
             &copy; {currentYear} MediaVault. All rights reserved.
           </p>
           <Link
             to="/contact"
-            className="text-slate-400 hover:text-cyan-400 text-sm transition"
+            className="text-slate-400 hover:text-cyan-400 text-sm transition order-1 sm:order-2"
           >
             Contact Us
           </Link>
