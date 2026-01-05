@@ -18,6 +18,7 @@ import { UserProfilePage } from './pages/UserProfilePage'
 import { VerifyEmailPage } from './pages/VerifyEmailPage'
 import { ContactFormPage } from './pages/ContactFormPage'
 import { AdminUsersPage } from './pages/AdminUsersPage'
+import { AdminContactPage } from './pages/AdminContactPage'
 
 function App() {
   return (
@@ -90,14 +91,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* <Route
+          <Route
             path="/admin/contact"
             element={
               <ProtectedRoute adminOnly>
                 <AdminContactPage />
               </ProtectedRoute>
             }
-          /> */}
+          />
 
           {/* Catch All */}
           <Route path="*" element={<Navigate to="/" replace />} />

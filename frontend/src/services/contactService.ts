@@ -61,3 +61,48 @@ export const deleteContactMessage = async (id: string): Promise<void> => {
     throw error
   }
 }
+
+// Get all contact messages (admin only)
+export const getAllMessages = async (
+  page: number = 1,
+  limit: number = 10
+): Promise<{
+  messages: Contact[]
+  pagination: {
+    currentPage: number
+    totalPages: number
+    totalItems: number
+    itemsPerPage: number
+  }
+}> => {
+  try {
+    const response = await api.get('/admin/contact', {
+      params: { page, limit },
+    })
+    return response.data.data
+  } catch (error) {
+    console.error('Error fetching all messages:', error)
+    throw error
+  }
+}
+
+// Delete a contact message (admin)
+export const deleteMessageAdmin = async (id: string): Promise<void> => {
+  try {
+    await api.delete(`/admin/contact/${id}`)
+  } catch (error) {
+    console.error('Error deleting message:', error)
+    throw error
+  }
+}
+
+// Mark message as read (admin)
+export const markMessageAsRead = async (id: string): Promise<Contact> => {
+  try {
+    const response = await api.put(`/contact/${id}/read`)
+    return response.data.data.contact
+  } catch (error) {
+    console.error('Error marking message as read:', error)
+    throw error
+  }
+}

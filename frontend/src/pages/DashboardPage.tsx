@@ -310,8 +310,8 @@ export const DashboardPage = () => {
                     User Management
                   </Button>
                   <Button
-                    disabled
-                    className="h-11 bg-linear-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold rounded-lg flex items-center justify-center gap-2 opacity-50"
+                    onClick={() => navigate('/admin/contact')}
+                    className="h-11 bg-linear-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold rounded-lg flex items-center justify-center gap-2"
                   >
                     <Mail className="w-4 h-4" />
                     Contact Messages

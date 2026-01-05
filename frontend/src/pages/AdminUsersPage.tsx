@@ -253,7 +253,7 @@ export const AdminUsersPage = () => {
             variant="ghost"
             size="sm"
             onClick={() => navigate('/dashboard')}
-            className="text-slate-400 hover:text-white"
+            className="text-slate-100 hover:text-white"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Dashboard
