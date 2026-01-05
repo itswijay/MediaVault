@@ -27,6 +27,7 @@ export const RegisterPage = () => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [otp, setOtp] = useState('')
+  const [agreeTerms, setAgreeTerms] = useState(false)
 
   // UI states
   const [step, setStep] = useState<'registration' | 'otp-verification'>(
@@ -108,6 +109,10 @@ export const RegisterPage = () => {
     }
     if (password !== confirmPassword) {
       setError('Passwords do not match')
+      return false
+    }
+    if (!agreeTerms) {
+      setError('You must agree to the Terms of Service and Privacy Policy')
       return false
     }
     return true
@@ -460,6 +465,11 @@ export const RegisterPage = () => {
                     <input
                       id="terms"
                       type="checkbox"
+                      checked={agreeTerms}
+                      onChange={(e) => {
+                        setAgreeTerms(e.target.checked)
+                        setError(null)
+                      }}
                       disabled={isLoading}
                       className="w-4 h-4 rounded border-slate-600 bg-slate-700 text-cyan-500 focus:ring-cyan-500 cursor-pointer mt-0.5"
                     />
