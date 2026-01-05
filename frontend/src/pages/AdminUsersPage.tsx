@@ -12,12 +12,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Footer } from '@/components/Footer'
-import {
-  getAllUsers,
-  updateAdminUser,
-  softDeleteUser,
-  hardDeleteUser,
-} from '@/services/userService'
+import { getAllUsers, updateAdminUser } from '@/services/userService'
 import type { User } from '@/types'
 import {
   Search,
@@ -25,8 +20,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Edit2,
-  Trash2,
-  Eye,
   ArrowLeft,
   CheckCircle2,
   XCircle,
@@ -71,7 +64,6 @@ export const AdminUsersPage = () => {
   // Modal States
   const [editingUser, setEditingUser] = useState<EditingUser | null>(null)
   const [isSavingEdit, setIsSavingEdit] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
 
   // Fetch users
   const fetchUsers = async (page: number) => {
@@ -87,7 +79,8 @@ export const AdminUsersPage = () => {
       const role = roleFilter || undefined
 
       const data = await getAllUsers(page, USERS_PER_PAGE, role, isActive)
-      setUsers(data.users)
+      console.log('Fetched users:', data) // Debug log
+      setUsers(data.users || [])
       setCurrentPage(data.pagination.currentPage)
       setTotalPages(data.pagination.totalPages)
       setTotalItems(data.pagination.totalItems)
@@ -115,6 +108,7 @@ export const AdminUsersPage = () => {
 
   // Filter users by search term (client-side)
   const filteredUsers = users.filter((user) => {
+    if (!user || !user.name || !user.email) return true // Show users without full data
     const searchLower = searchTerm.toLowerCase()
     return (
       user.name.toLowerCase().includes(searchLower) ||
@@ -128,12 +122,14 @@ export const AdminUsersPage = () => {
 
     setIsSavingEdit(true)
     try {
+      console.log('Saving user:', editingUser) // Debug log
       const updatedUser = await updateAdminUser(editingUser.id, {
         name: editingUser.name,
         email: editingUser.email,
-        role: editingUser.role,
+        role: editingUser.role || 'user', // Ensure role is always sent
         isActive: editingUser.isActive,
       })
+      console.log('Updated user response:', updatedUser) // Debug log
 
       if (updatedUser) {
         setUsers((prev) =>
@@ -142,81 +138,18 @@ export const AdminUsersPage = () => {
         setEditingUser(null)
         setSuccessMessage('User updated successfully')
         setTimeout(() => setSuccessMessage(null), 3000)
+      } else {
+        setError('Failed to update user - no response from server')
       }
     } catch (err) {
       let errorMsg = 'Failed to update user'
       if (err instanceof Error && err.message) {
         errorMsg = err.message
       }
+      console.error('Error saving user:', err) // Debug log
       setError(errorMsg)
     } finally {
       setIsSavingEdit(false)
-    }
-  }
-
-  // Handle soft delete (deactivate)
-  const handleDeactivate = async (userId: string) => {
-    if (userId === currentUser?.id) {
-      setError('You cannot deactivate your own account')
-      return
-    }
-
-    if (
-      !window.confirm(
-        'Are you sure you want to deactivate this user? They will not be able to login.'
-      )
-    ) {
-      return
-    }
-
-    setIsDeleting(true)
-    try {
-      await softDeleteUser(userId)
-      setUsers((prev) =>
-        prev.map((u) => (u.id === userId ? { ...u, isActive: false } : u))
-      )
-      setSuccessMessage('User deactivated successfully')
-      setTimeout(() => setSuccessMessage(null), 3000)
-    } catch (err) {
-      let errorMsg = 'Failed to deactivate user'
-      if (err instanceof Error && err.message) {
-        errorMsg = err.message
-      }
-      setError(errorMsg)
-    } finally {
-      setIsDeleting(false)
-    }
-  }
-
-  // Handle hard delete
-  const handlePermanentDelete = async (userId: string) => {
-    if (userId === currentUser?.id) {
-      setError('You cannot delete your own account')
-      return
-    }
-
-    if (
-      !window.confirm(
-        'Are you sure you want to permanently delete this user? This action is irreversible and will delete all their data.'
-      )
-    ) {
-      return
-    }
-
-    setIsDeleting(true)
-    try {
-      await hardDeleteUser(userId)
-      setUsers((prev) => prev.filter((u) => u.id !== userId))
-      setSuccessMessage('User permanently deleted')
-      setTimeout(() => setSuccessMessage(null), 3000)
-    } catch (err) {
-      let errorMsg = 'Failed to delete user'
-      if (err instanceof Error && err.message) {
-        errorMsg = err.message
-      }
-      setError(errorMsg)
-    } finally {
-      setIsDeleting(false)
     }
   }
 
@@ -407,196 +340,163 @@ export const AdminUsersPage = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredUsers.map((u) => (
-                        <tr
-                          key={u.id}
-                          className="border-b border-slate-700 hover:bg-slate-700/30 transition"
-                        >
-                          <td className="px-4 py-3 text-slate-200">
-                            {editingUser?.id === u.id ? (
-                              <input
-                                type="text"
-                                value={editingUser.name}
-                                onChange={(e) =>
-                                  setEditingUser({
-                                    ...editingUser,
-                                    name: e.target.value,
-                                  })
-                                }
-                                className="w-full px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-white"
-                              />
-                            ) : (
-                              u.name
-                            )}
-                          </td>
-                          <td className="px-4 py-3 text-slate-200">
-                            {editingUser?.id === u.id ? (
-                              <input
-                                type="email"
-                                value={editingUser.email}
-                                onChange={(e) =>
-                                  setEditingUser({
-                                    ...editingUser,
-                                    email: e.target.value,
-                                  })
-                                }
-                                className="w-full px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-white"
-                              />
-                            ) : (
-                              <div className="flex items-center gap-1">
-                                <Mail className="w-4 h-4 text-slate-500" />
-                                {u.email}
-                              </div>
-                            )}
-                          </td>
-                          <td className="px-4 py-3">
-                            {editingUser?.id === u.id ? (
-                              <select
-                                value={editingUser.role}
-                                onChange={(e) =>
-                                  setEditingUser({
-                                    ...editingUser,
-                                    role: e.target.value as 'user' | 'admin',
-                                  })
-                                }
-                                className="px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-white"
-                              >
-                                <option value="user">User</option>
-                                <option value="admin">Admin</option>
-                              </select>
-                            ) : (
-                              <span
-                                className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${
-                                  u.role === 'admin'
-                                    ? 'bg-purple-500/20 text-purple-300'
-                                    : 'bg-blue-500/20 text-blue-300'
-                                }`}
-                              >
-                                {u.role === 'admin' && (
-                                  <Shield className="w-3 h-3" />
-                                )}
-                                {u.role}
-                              </span>
-                            )}
-                          </td>
-                          <td className="px-4 py-3">
-                            {editingUser?.id === u.id ? (
-                              <label className="flex items-center gap-2 text-slate-200">
+                      {filteredUsers.map((u) => {
+                        if (!u) return null
+                        return (
+                          <tr
+                            key={u.id}
+                            className="border-b border-slate-700 hover:bg-slate-700/30 transition"
+                          >
+                            <td className="px-4 py-3 text-slate-200">
+                              {editingUser?.id === u.id && editingUser ? (
                                 <input
-                                  type="checkbox"
-                                  checked={editingUser.isActive}
+                                  type="text"
+                                  value={editingUser.name || ''}
                                   onChange={(e) =>
                                     setEditingUser({
                                       ...editingUser,
-                                      isActive: e.target.checked,
+                                      name: e.target.value,
                                     })
                                   }
-                                  className="rounded"
+                                  className="w-full px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-white"
                                 />
-                                Active
-                              </label>
-                            ) : (
-                              <span
-                                className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${
-                                  u.isActive
-                                    ? 'bg-green-500/20 text-green-300'
-                                    : 'bg-red-500/20 text-red-300'
-                                }`}
-                              >
-                                {u.isActive ? (
-                                  <CheckCircle2 className="w-3 h-3" />
-                                ) : (
-                                  <XCircle className="w-3 h-3" />
-                                )}
-                                {u.isActive ? 'Active' : 'Inactive'}
-                              </span>
-                            )}
-                          </td>
-                          <td className="px-4 py-3 text-slate-400 text-sm">
-                            {formatDate(u.createdAt)}
-                          </td>
-                          <td className="px-4 py-3">
-                            {editingUser?.id === u.id ? (
-                              <div className="flex gap-2">
-                                <Button
-                                  onClick={handleSaveEdit}
-                                  disabled={isSavingEdit}
-                                  size="sm"
-                                  className="bg-green-600 hover:bg-green-700 text-white"
+                              ) : (
+                                u.name || 'N/A'
+                              )}
+                            </td>
+                            <td className="px-4 py-3 text-slate-200">
+                              {editingUser?.id === u.id && editingUser ? (
+                                <input
+                                  type="email"
+                                  value={editingUser.email || ''}
+                                  onChange={(e) =>
+                                    setEditingUser({
+                                      ...editingUser,
+                                      email: e.target.value,
+                                    })
+                                  }
+                                  className="w-full px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-white"
+                                />
+                              ) : (
+                                <div className="flex items-center gap-1">
+                                  <Mail className="w-4 h-4 text-slate-500" />
+                                  {u.email || 'N/A'}
+                                </div>
+                              )}
+                            </td>
+                            <td className="px-4 py-3">
+                              {editingUser?.id === u.id && editingUser ? (
+                                <select
+                                  value={editingUser.role || 'user'}
+                                  onChange={(e) =>
+                                    setEditingUser({
+                                      ...editingUser,
+                                      role: e.target.value as 'user' | 'admin',
+                                    })
+                                  }
+                                  className="px-2 py-1 bg-slate-700/50 border border-slate-600 rounded text-white"
                                 >
-                                  {isSavingEdit ? (
-                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                  ) : (
-                                    'Save'
+                                  <option value="user">User</option>
+                                  <option value="admin">Admin</option>
+                                </select>
+                              ) : (
+                                <span
+                                  className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${
+                                    u.role === 'admin'
+                                      ? 'bg-purple-500/20 text-purple-300'
+                                      : 'bg-blue-500/20 text-blue-300'
+                                  }`}
+                                >
+                                  {u.role === 'admin' && (
+                                    <Shield className="w-3 h-3" />
                                   )}
-                                </Button>
-                                <Button
-                                  onClick={() => setEditingUser(null)}
-                                  disabled={isSavingEdit}
-                                  size="sm"
-                                  variant="outline"
-                                  className="border-slate-600 text-slate-200 hover:bg-slate-800"
+                                  {u.role || 'user'}
+                                </span>
+                              )}
+                            </td>
+                            <td className="px-4 py-3">
+                              {editingUser?.id === u.id && editingUser ? (
+                                <label className="flex items-center gap-2 text-slate-200">
+                                  <input
+                                    type="checkbox"
+                                    checked={editingUser.isActive || false}
+                                    onChange={(e) =>
+                                      setEditingUser({
+                                        ...editingUser,
+                                        isActive: e.target.checked,
+                                      })
+                                    }
+                                    className="rounded"
+                                  />
+                                  Active
+                                </label>
+                              ) : (
+                                <span
+                                  className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${
+                                    u.isActive
+                                      ? 'bg-green-500/20 text-green-300'
+                                      : 'bg-red-500/20 text-red-300'
+                                  }`}
                                 >
-                                  Cancel
-                                </Button>
-                              </div>
-                            ) : (
-                              <div className="flex gap-2">
+                                  {u.isActive ? (
+                                    <CheckCircle2 className="w-3 h-3" />
+                                  ) : (
+                                    <XCircle className="w-3 h-3" />
+                                  )}
+                                  {u.isActive ? 'Active' : 'Inactive'}
+                                </span>
+                              )}
+                            </td>
+                            <td className="px-4 py-3 text-slate-400 text-sm">
+                              {u.createdAt ? formatDate(u.createdAt) : 'N/A'}
+                            </td>
+                            <td className="px-4 py-3">
+                              {editingUser?.id === u.id && editingUser ? (
+                                <div className="flex gap-2">
+                                  <Button
+                                    onClick={handleSaveEdit}
+                                    disabled={isSavingEdit}
+                                    size="sm"
+                                    className="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold"
+                                  >
+                                    {isSavingEdit ? (
+                                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                                    ) : null}
+                                    Save
+                                  </Button>
+                                  <Button
+                                    onClick={() => setEditingUser(null)}
+                                    disabled={isSavingEdit}
+                                    size="sm"
+                                    variant="outline"
+                                    className="border-slate-600 text-slate-200 hover:bg-slate-800 font-semibold"
+                                  >
+                                    Cancel
+                                  </Button>
+                                </div>
+                              ) : (
                                 <Button
                                   onClick={() =>
                                     setEditingUser({
                                       id: u.id,
-                                      name: u.name,
-                                      email: u.email,
-                                      role: u.role as 'user' | 'admin',
-                                      isActive: u.isActive,
+                                      name: u.name || '',
+                                      email: u.email || '',
+                                      role:
+                                        (u.role as 'user' | 'admin') || 'user',
+                                      isActive: u.isActive ?? true,
                                     })
                                   }
                                   size="sm"
-                                  variant="ghost"
-                                  className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10"
+                                  className="bg-cyan-600 hover:bg-cyan-700 text-white font-semibold"
                                 >
-                                  <Edit2 className="w-4 h-4" />
+                                  <Edit2 className="w-4 h-4 mr-2" />
+                                  Edit
                                 </Button>
-                                <Button
-                                  onClick={() => handleDeactivate(u.id)}
-                                  disabled={isDeleting}
-                                  size="sm"
-                                  variant="ghost"
-                                  className="text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/10"
-                                  title={
-                                    u.isActive
-                                      ? 'Deactivate user'
-                                      : 'User already inactive'
-                                  }
-                                >
-                                  {isDeleting ? (
-                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                  ) : u.isActive ? (
-                                    <Eye className="w-4 h-4" />
-                                  ) : (
-                                    <XCircle className="w-4 h-4" />
-                                  )}
-                                </Button>
-                                <Button
-                                  onClick={() => handlePermanentDelete(u.id)}
-                                  disabled={isDeleting}
-                                  size="sm"
-                                  variant="ghost"
-                                  className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                                  title="Permanently delete user"
-                                >
-                                  {isDeleting ? (
-                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                  ) : (
-                                    <Trash2 className="w-4 h-4" />
-                                  )}
-                                </Button>
-                              </div>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
+                              )}
+                            </td>
+                          </tr>
+                        )
+                      })}
                     </tbody>
                   </table>
                 </div>

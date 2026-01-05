@@ -127,10 +127,20 @@ export const getAllUsers = async (
       params.append('isActive', String(isActive))
     }
 
-    const response = await api.get<UsersListResponse>('/admin/users', {
+    const response = await api.get<UsersListResponse>('/users/admin', {
       params: Object.fromEntries(params),
     })
-    return response.data.data
+
+    // Transform _id to id for consistency
+    const transformedUsers = response.data.data.users.map((user) => ({
+      ...user,
+      id: (user as { _id?: string } & typeof user)._id || user.id, // Use _id if id doesn't exist
+    }))
+
+    return {
+      users: transformedUsers,
+      pagination: response.data.data.pagination,
+    }
   } catch (error) {
     console.error('Error fetching users:', error)
     throw error
@@ -143,12 +153,14 @@ export const updateAdminUser = async (
   updates: { name?: string; email?: string; role?: string; isActive?: boolean }
 ): Promise<User | null> => {
   try {
-    const response = await api.put<UserResponse>(
-      `/admin/users/${userId}`,
-      updates
-    )
+    const response = await api.put<UserResponse>(`/users/${userId}`, updates)
     if (response.data.success) {
-      return response.data.data.user
+      const user = response.data.data.user
+      // Transform _id to id for consistency
+      return {
+        ...user,
+        id: (user as { _id?: string } & typeof user)._id || user.id,
+      }
     }
     return null
   } catch (error) {
@@ -160,7 +172,7 @@ export const updateAdminUser = async (
 // Soft delete user (deactivate)
 export const softDeleteUser = async (userId: string): Promise<User | null> => {
   try {
-    const response = await api.delete<UserResponse>(`/admin/users/${userId}`)
+    const response = await api.delete<UserResponse>(`/users/${userId}`)
     if (response.data.success) {
       return response.data.data.user
     }
@@ -175,7 +187,7 @@ export const softDeleteUser = async (userId: string): Promise<User | null> => {
 export const hardDeleteUser = async (userId: string): Promise<boolean> => {
   try {
     const response = await api.delete<{ success: boolean }>(
-      `/admin/users/${userId}/permanent`,
+      `/users/${userId}/permanent`,
       {
         data: { confirmation: 'DELETE' },
       }
