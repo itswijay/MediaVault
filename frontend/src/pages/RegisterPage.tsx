@@ -264,37 +264,41 @@ export const RegisterPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col pt-4">
-      <main className="flex-1 flex items-center justify-center">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col pt-4 sm:pt-8">
+      <main className="flex-1 flex items-center justify-center w-full px-4">
         <div className="w-full max-w-md">
           {/* Logo/Header */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-6 sm:mb-8">
             <img
               src={logoImg}
               alt="MediaVault Logo"
-              className="w-20 h-20 mx-auto mb-4 object-contain"
+              className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 object-contain"
             />
-            <h1 className="text-5xl font-bold text-white mb-2">MediaVault</h1>
-            <p className="text-slate-400">Create your account</p>
+            <h1 className="text-3xl sm:text-5xl font-bold text-white mb-1 sm:mb-2">
+              MediaVault
+            </h1>
+            <p className="text-sm sm:text-base text-slate-400">
+              Create your account
+            </p>
           </div>
 
           {/* Registration Card */}
           <Card className="border-slate-700 bg-slate-800/50 backdrop-blur">
-            <CardHeader className="space-y-2">
-              <CardTitle className="text-2xl text-white">
+            <CardHeader className="space-y-2 px-4 sm:px-6 pt-2">
+              <CardTitle className="text-xl sm:text-2xl text-white">
                 {step === 'registration' ? 'Create Account' : 'Verify Email'}
               </CardTitle>
-              <CardDescription className="text-slate-400">
+              <CardDescription className="text-xs sm:text-sm text-slate-400">
                 {step === 'registration'
                   ? 'Sign up to get started with MediaVault'
                   : `We've sent an OTP to ${email}`}
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 px-4 sm:px-6 pb-2">
               {/* Error Message */}
               {error && (
-                <div className="p-3 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-3">
+                <div className="p-2 sm:p-3 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 text-xs sm:text-sm flex items-start gap-3">
                   <span className="text-lg leading-none">⚠</span>
                   <span>{error}</span>
                 </div>
@@ -302,7 +306,7 @@ export const RegisterPage = () => {
 
               {/* Success Message */}
               {success && (
-                <div className="p-3 rounded-md bg-green-500/10 border border-green-500/20 text-green-400 text-sm flex items-start gap-3">
+                <div className="p-2 sm:p-3 rounded-md bg-green-500/10 border border-green-500/20 text-green-400 text-xs sm:text-sm flex items-start gap-3">
                   <Check className="w-5 h-5 mt-0.5 shrink-0" />
                   <span>{success}</span>
                 </div>
@@ -313,7 +317,10 @@ export const RegisterPage = () => {
                 <form onSubmit={handleRegistration} className="space-y-4">
                   {/* Name Input */}
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-slate-300">
+                    <Label
+                      htmlFor="name"
+                      className="text-xs sm:text-sm text-slate-300"
+                    >
                       Full Name
                     </Label>
                     <div className="relative">
@@ -335,7 +342,10 @@ export const RegisterPage = () => {
 
                   {/* Email Input */}
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-slate-300">
+                    <Label
+                      htmlFor="email"
+                      className="text-xs sm:text-sm text-slate-300"
+                    >
                       Email Address
                     </Label>
                     <div className="relative">
@@ -357,7 +367,10 @@ export const RegisterPage = () => {
 
                   {/* Password Input */}
                   <div className="space-y-2">
-                    <Label htmlFor="password" className="text-slate-300">
+                    <Label
+                      htmlFor="password"
+                      className="text-xs sm:text-sm text-slate-300"
+                    >
                       Password
                     </Label>
                     <div className="relative">
@@ -383,7 +396,7 @@ export const RegisterPage = () => {
                           {['weak', 'fair', 'strong'].map((level) => (
                             <div
                               key={level}
-                              className={`h-1.5 flex-1 rounded-full transition-colors ${
+                              className={`h-1 sm:h-1.5 flex-1 rounded-full transition-colors ${
                                 passwordStrength === level ||
                                 (level === 'weak' &&
                                   ['fair', 'strong'].includes(
@@ -402,7 +415,7 @@ export const RegisterPage = () => {
                           ))}
                         </div>
                         <p
-                          className={`text-xs ${
+                          className={`text-xs sm:text-sm ${
                             passwordStrength === 'weak'
                               ? 'text-red-400'
                               : passwordStrength === 'fair'
@@ -419,7 +432,10 @@ export const RegisterPage = () => {
 
                   {/* Confirm Password Input */}
                   <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="text-slate-300">
+                    <Label
+                      htmlFor="confirmPassword"
+                      className="text-xs sm:text-sm text-slate-300"
+                    >
                       Confirm Password
                     </Label>
                     <div className="relative">
@@ -449,7 +465,7 @@ export const RegisterPage = () => {
                     />
                     <Label
                       htmlFor="terms"
-                      className="text-xs text-slate-400 cursor-pointer font-normal"
+                      className="text-xs text-slate-400 cursor-pointer font-normal leading-tight"
                     >
                       I agree to the Terms of Service and Privacy Policy
                     </Label>
@@ -476,7 +492,10 @@ export const RegisterPage = () => {
                 <form onSubmit={handleVerifyOtp} className="space-y-4">
                   {/* OTP Input */}
                   <div className="space-y-2">
-                    <Label htmlFor="otp" className="text-slate-300">
+                    <Label
+                      htmlFor="otp"
+                      className="text-xs sm:text-sm text-slate-300"
+                    >
                       Enter OTP
                     </Label>
                     <Input
@@ -553,7 +572,7 @@ export const RegisterPage = () => {
                     <div className="absolute inset-0 flex items-center">
                       <div className="w-full border-t border-slate-600"></div>
                     </div>
-                    <div className="relative flex justify-center text-sm">
+                    <div className="relative flex justify-center text-xs sm:text-sm">
                       <span className="px-2 bg-slate-800 text-slate-400">
                         Already have an account?
                       </span>
@@ -561,7 +580,7 @@ export const RegisterPage = () => {
                   </div>
 
                   {/* Login Link */}
-                  <p className="text-center text-sm text-slate-400">
+                  <p className="text-center text-xs sm:text-sm text-slate-400">
                     <Link
                       to="/login"
                       className="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors"
@@ -575,7 +594,7 @@ export const RegisterPage = () => {
           </Card>
 
           {/* Footer Info */}
-          <p className="text-center text-xs text-slate-500 mt-6">
+          <p className="text-center text-xs text-slate-500 mt-4 sm:mt-6">
             By signing up, you agree to our Terms of Service and Privacy Policy
           </p>
         </div>

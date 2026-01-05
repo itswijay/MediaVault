@@ -167,35 +167,39 @@ export const LoginPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col pt-4">
-      <main className="flex-1 flex items-center justify-center">
+    <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col pt-4 sm:pt-8">
+      <main className="flex-1 flex items-center justify-center w-full px-4">
         <div className="w-full max-w-md">
           {/* Logo/Header */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-6 sm:mb-8">
             <img
               src={logoImg}
               alt="MediaVault Logo"
-              className="w-20 h-20 mx-auto mb-4 object-contain"
+              className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-4 object-contain"
             />
-            <h1 className="text-5xl font-bold text-white mb-2">MediaVault</h1>
-            <p className="text-slate-400">Your Personal Media Gallery</p>
+            <h1 className="text-3xl sm:text-5xl font-bold text-white mb-1 sm:mb-2">
+              MediaVault
+            </h1>
+            <p className="text-sm sm:text-base text-slate-400">
+              Your Personal Media Gallery
+            </p>
           </div>
 
           {/* Login Card */}
           <Card className="border-slate-700 bg-slate-800/50 backdrop-blur">
-            <CardHeader className="space-y-2">
-              <CardTitle className="text-2xl text-white">
+            <CardHeader className="space-y-2 px-4 sm:px-6">
+              <CardTitle className="text-xl sm:text-2xl text-white">
                 Welcome Back
               </CardTitle>
-              <CardDescription className="text-slate-400">
+              <CardDescription className="text-xs sm:text-sm text-slate-400">
                 Sign in to your account to continue
               </CardDescription>
             </CardHeader>
 
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6 px-4 sm:px-6">
               {/* Error Message */}
               {error && (
-                <div className="p-3 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 text-sm flex items-start gap-3">
+                <div className="p-2 sm:p-3 rounded-md bg-red-500/10 border border-red-500/20 text-red-400 text-xs sm:text-sm flex items-start gap-3">
                   <span className="text-lg leading-none">⚠</span>
                   <span>{error}</span>
                 </div>
@@ -205,7 +209,10 @@ export const LoginPage = () => {
               <form onSubmit={handleLogin} className="space-y-4">
                 {/* Email Input */}
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-slate-300">
+                  <Label
+                    htmlFor="email"
+                    className="text-xs sm:text-sm text-slate-300"
+                  >
                     Email Address
                   </Label>
                   <div className="relative">
@@ -227,8 +234,11 @@ export const LoginPage = () => {
 
                 {/* Password Input */}
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="password" className="text-slate-300">
+                  <div className="flex items-center justify-between flex-col sm:flex-row gap-1 sm:gap-0">
+                    <Label
+                      htmlFor="password"
+                      className="text-xs sm:text-sm text-slate-300"
+                    >
                       Password
                     </Label>
                     <Link
@@ -267,7 +277,7 @@ export const LoginPage = () => {
                   />
                   <Label
                     htmlFor="remember"
-                    className="text-sm text-slate-400 cursor-pointer font-normal"
+                    className="text-xs sm:text-sm text-slate-400 cursor-pointer font-normal"
                   >
                     Remember me
                   </Label>
@@ -295,7 +305,7 @@ export const LoginPage = () => {
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-slate-600"></div>
                 </div>
-                <div className="relative flex justify-center text-sm">
+                <div className="relative flex justify-center text-xs sm:text-sm">
                   <span className="px-2 bg-slate-800 text-slate-400">
                     Or continue with
                   </span>
@@ -307,12 +317,12 @@ export const LoginPage = () => {
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
                   onError={handleGoogleError}
-                  width="320"
+                  width="100%"
                 />
               </div>
 
               {/* Sign Up Link */}
-              <p className="text-center text-sm text-slate-400">
+              <p className="text-center text-xs sm:text-sm text-slate-400">
                 Don't have an account?{' '}
                 <Link
                   to="/register"
@@ -325,7 +335,7 @@ export const LoginPage = () => {
           </Card>
 
           {/* Footer Info */}
-          <p className="text-center text-xs text-slate-500 mt-6">
+          <p className="text-center text-xs text-slate-500 mt-4 sm:mt-6">
             By signing in, you agree to our Terms of Service and Privacy Policy
           </p>
         </div>
